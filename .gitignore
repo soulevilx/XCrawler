@@ -16,3 +16,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/logfile.txt
+/teamcity.txt
+/coverage.xml
+/.env.testing
