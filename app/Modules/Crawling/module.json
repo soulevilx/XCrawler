@@ -1,0 +1,11 @@
+{
+    "name": "Crawling",
+    "alias": "crawling",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "App\\Modules\\Crawling\\Providers\\CrawlingServiceProvider"
+    ],
+    "files": []
+}
