@@ -13,7 +13,10 @@
         "laravel/framework": "^9",
         "laravel/sanctum": "^3",
         "laravel/tinker": "^2",
-        "nwidart/laravel-modules": "^9.0"
+        "nwidart/laravel-modules": "^9.0",
+        "jenssegers/mongodb": "^3.9",
+        "jooservices/xclient": "^0.1",
+        "laravel/horizon": "^5.13"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
