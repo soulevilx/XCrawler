@@ -2,6 +2,7 @@
 
 namespace App\Modules\Crawling\Services\XClient\Adapters;
 
+use App\Modules\Core\Services\Traits\HasRequestLog;
 use App\Modules\Core\Services\XClient\Adapters\XClientAdapterInterface;
 use App\Modules\Core\Services\XClient\Response\XClientResponseInterface;
 use App\Modules\Core\Services\XClient\XClient;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Event;
 
 class DomClientAdapter implements XClientAdapterInterface
 {
+    use HasRequestLog;
+
     private DomResponse $response;
 
     public function request(string $method, string $url, array $payload = []): XClientResponseInterface
@@ -40,6 +43,9 @@ class DomClientAdapter implements XClientAdapterInterface
             } else {
                 Event::dispatch(new CrawlingFailed());
             }
+
+            $this->logRequest($this->response, $url, $payload);
+
             return $this->response;
         }
     }

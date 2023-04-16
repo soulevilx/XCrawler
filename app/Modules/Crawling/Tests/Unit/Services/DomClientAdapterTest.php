@@ -5,6 +5,7 @@ namespace App\Modules\Crawling\Tests\Unit\Services;
 use App\Modules\Core\Services\XClient\XClient;
 use App\Modules\Crawling\Events\CrawlingFailed;
 use App\Modules\Crawling\Events\CrawlingSuccess;
+use App\Modules\Crawling\Models\RequestLog;
 use App\Modules\Crawling\Services\CrawlingService;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
@@ -20,6 +21,7 @@ class DomClientAdapterTest extends TestCase
     public function testRequestSuccess()
     {
         Event::fake([CrawlingSuccess::class]);
+        $url = $this->faker->url;
         $this->instance(
             XClient::class,
             Mockery::mock(XClient::class, function (MockInterface $mock) {
@@ -41,11 +43,21 @@ class DomClientAdapterTest extends TestCase
             Crawler::class,
             $service->request(
                 'GET',
-                $this->faker->url,
-                []
+                $url
+
             )->getData());
 
         Event::assertDispatched(CrawlingSuccess::class);
+
+        $this->assertDatabaseHas(
+            RequestLog::TABLE_NAME,
+            [
+                'url' => $url,
+                'status' => 200,
+                'success' => true,
+            ],
+            'mongodb'
+        );
     }
 
     public function testRequestClientException()
@@ -79,16 +91,27 @@ class DomClientAdapterTest extends TestCase
         $service = app(CrawlingService::class);
         $service->request(
             'GET',
-            $this->faker->url,
+            $url,
             []
         );
 
         Event::assertDispatched(CrawlingFailed::class);
+
+        $this->assertDatabaseHas(
+            RequestLog::TABLE_NAME,
+            [
+                'url' => $url,
+                'status' => 404,
+                'success' => false,
+            ],
+            'mongodb'
+        );
     }
 
     public function testRequestException()
     {
         Event::fake([CrawlingFailed::class]);
+        $url = $this->faker->url;
         $this->instance(
             XClient::class,
             Mockery::mock(XClient::class, function (MockInterface $mock) {
@@ -114,10 +137,19 @@ class DomClientAdapterTest extends TestCase
         $service = app(CrawlingService::class);
         $service->request(
             'GET',
-            $this->faker->url,
-            []
+            $url
         );
 
         Event::assertDispatched(CrawlingFailed::class);
+
+        $this->assertDatabaseHas(
+            RequestLog::TABLE_NAME,
+            [
+                'url' => $url,
+                'status' => null,
+                'success' => false,
+            ],
+            'mongodb'
+        );
     }
 }

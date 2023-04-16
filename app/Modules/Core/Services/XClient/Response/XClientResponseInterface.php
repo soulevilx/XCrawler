@@ -10,11 +10,11 @@ interface XClientResponseInterface
 
     public function getData(): mixed;
 
-    public function getProtocolVersion(): string;
+    public function getProtocolVersion(): ?string;
 
-    public function getHeaders(): array;
+    public function getHeaders(): ?array;
 
-    public function getStatusCode(): int;
+    public function getStatusCode(): ?int;
 
-    public function getReasonPhrase(): string;
+    public function getReasonPhrase(): ?string;
 }

@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-
 use App\Modules\Core\Models\Setting;
+use App\Modules\Crawling\Models\RequestLog;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -22,6 +22,8 @@ abstract class TestCase extends BaseTestCase
     public function refreshDatabase()
     {
         Setting::truncate();
+        RequestLog::truncate();
+
         $this->artisan('db:wipe');
         $this->artisan('migrate:fresh');
     }

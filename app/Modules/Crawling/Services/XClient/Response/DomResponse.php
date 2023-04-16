@@ -24,7 +24,6 @@ class DomResponse implements XClientResponseInterface
             $this->raw = $this->response->getBody()->getContents();
         }
 
-
         $this->crawler = new Crawler($this->raw);
     }
 
@@ -43,23 +42,23 @@ class DomResponse implements XClientResponseInterface
         return $this->crawler;
     }
 
-    public function getProtocolVersion(): string
+    public function getProtocolVersion(): ?string
     {
-        return $this->response->getProtocolVersion();
+        return $this->response?->getProtocolVersion();
     }
 
-    public function getHeaders(): array
+    public function getHeaders(): ?array
     {
-        return $this->response->getHeaders();
+        return $this->response?->getHeaders();
     }
 
-    public function getStatusCode(): int
+    public function getStatusCode(): ?int
     {
-        return $this->response->getStatusCode();
+        return $this->response?->getStatusCode();
     }
 
     public function getReasonPhrase(): string
     {
-        return $this->response->getReasonPhrase();
+        return $this->response?->getReasonPhrase();
     }
 }

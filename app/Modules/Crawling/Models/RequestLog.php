@@ -10,18 +10,21 @@ class RequestLog extends Model
     use HasFactory;
 
     protected $connection = 'mongodb';
+    public const TABLE_NAME = 'request_logs';
 
     protected $fillable = [
         'url',
         'payload',
-        'code',
         'response',
+        'status',
+        'success'
     ];
 
     protected $casts = [
         'url' => 'string',
         'payload' => 'array',
-        'code' => 'integer',
         'response' => 'string',
+        'status' => 'integer',
+        'success' => 'boolean'
     ];
 }
