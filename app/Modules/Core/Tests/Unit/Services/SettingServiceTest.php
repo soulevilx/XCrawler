@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Crawling\Tests\Unit\Services;
+namespace App\Modules\Core\Tests\Unit\Services;
 
 use App\Modules\Core\Services\SettingService;
 use Tests\TestCase;
