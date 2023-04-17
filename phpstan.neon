@@ -1,0 +1,13 @@
+parameters:
+    level: 0
+    paths:
+        - app
+    inferPrivatePropertyTypeFromConstructor: true
+    checkMissingIterableValueType: true
+    excludePaths:
+        - */Tests/*
+        - */Database/*
+        - */Routes/*
+        - 'rector.php'
+
+    ignoreErrors:

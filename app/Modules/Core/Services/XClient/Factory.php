@@ -70,9 +70,11 @@ class Factory
 
     public function make(): Client
     {
-        $this->client = new Client(
-            ['handler' => $this->handler]
-            + ($this->options ?? [])
+        $this->client = app()->makeWith(
+            Client::class,
+            [
+                'config' => ['handler' => $this->handler] + ($this->options ?? [])
+            ]
         );
 
         if ($this->fakeResponseCode) {
@@ -98,7 +100,7 @@ class Factory
         return $this;
     }
 
-    public function getHistory( $client): array
+    public function getHistory($client): array
     {
         return $this->history[spl_object_id($client)] ?? [];
     }

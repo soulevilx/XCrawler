@@ -16,8 +16,6 @@ class DomClientAdapter implements XClientAdapterInterface
 {
     use HasRequestLog;
 
-    private DomResponse $response;
-
     public function request(string $method, string $url, array $payload = []): XClientResponseInterface
     {
         $client = app(XClient::class);
@@ -30,23 +28,23 @@ class DomClientAdapter implements XClientAdapterInterface
         ]);
 
         try {
-            $this->response = new DomResponse($client->request($url, $payload, $method));
+            $response = new DomResponse($client->request($url, $payload, $method));
 
         } catch (ClientException $e) {
-            $this->response = new DomResponse($e->getResponse());
+            $response = new DomResponse($e->getResponse());
         } finally {
-            if (!isset($this->response)) {
-                $this->response = new DomResponse(null);
+            if (!isset($response)) {
+                $response = new DomResponse(null);
             }
-            if ($this->response->isSuccess()) {
+            if ($response->isSuccess()) {
                 Event::dispatch(new CrawlingSuccess());
             } else {
                 Event::dispatch(new CrawlingFailed());
             }
 
-            $this->logRequest($this->response, $url, $payload);
+            $this->logRequest($response, $url, $payload);
 
-            return $this->response;
+            return $response;
         }
     }
 }

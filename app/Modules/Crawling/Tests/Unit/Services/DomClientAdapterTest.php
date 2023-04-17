@@ -7,6 +7,7 @@ use App\Modules\Crawling\Events\CrawlingFailed;
 use App\Modules\Crawling\Events\CrawlingSuccess;
 use App\Modules\Crawling\Models\RequestLog;
 use App\Modules\Crawling\Services\CrawlingService;
+use App\Modules\Crawling\Services\XClient\Adapters\DomClientAdapter;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -38,14 +39,16 @@ class DomClientAdapterTest extends TestCase
                 $mock->shouldReceive('request')->andReturn($response);
             })
         );
-        $service = app(CrawlingService::class);;
+        $service = app()->makeWith(CrawlingService::class, [
+            'adapter' => app(DomClientAdapter::class),
+        ]);
+        $response =  $service->request('GET', $url);
         $this->assertInstanceOf(
             Crawler::class,
-            $service->request(
-                'GET',
-                $url
-
-            )->getData());
+            $response->getData()
+        );
+        $this->assertEquals('1.1', $response->getProtocolVersion());
+        $this->assertEquals('OK', $response->getReasonPhrase());
 
         Event::assertDispatched(CrawlingSuccess::class);
 
@@ -88,7 +91,9 @@ class DomClientAdapterTest extends TestCase
             })
         );
 
-        $service = app(CrawlingService::class);
+        $service = app()->makeWith(CrawlingService::class, [
+            'adapter' => app(DomClientAdapter::class),
+        ]);
         $service->request(
             'GET',
             $url,
@@ -134,7 +139,9 @@ class DomClientAdapterTest extends TestCase
             })
         );
 
-        $service = app(CrawlingService::class);
+        $service = app()->makeWith(CrawlingService::class, [
+            'adapter' => app(DomClientAdapter::class),
+        ]);
         $service->request(
             'GET',
             $url

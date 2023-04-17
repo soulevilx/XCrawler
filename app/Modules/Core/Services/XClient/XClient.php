@@ -39,13 +39,16 @@ class XClient
         $this->setOptions($options);
         $this->setRequestOptions($requestOptions);
 
-        $this->factory = new Factory($options['isFake'] ?? null);
+        $this->factory = new Factory($options['fakeResponseCode'] ?? null);
         $this->factory
             ->enableRetries($this->options['maxRetries'], $this->options['delayInSec'], $this->options['minErrorCode'])
             ->addOptions($this->options);
 
         if ($this->options['logger']['instance']) {
-            $this->factory->enableLogging($this->options['logger']['formatter'] ?? MessageFormatter::SHORT);
+            $this->factory->enableLogging(
+                $this->options['logger']['instance'],
+                $this->options['logger']['formatter'] ?? MessageFormatter::SHORT
+            );
         }
 
         if ($this->options['caching']['instance']) {
