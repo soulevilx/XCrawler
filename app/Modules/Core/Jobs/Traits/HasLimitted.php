@@ -7,6 +7,13 @@ use App\Modules\Core\Jobs\Middlewares\LimitMiddleware;
 
 trait HasLimitted
 {
+    /**
+     * The number of times the queued listener may be attempted.
+     *
+     * @var int
+     */
+    public int $tries = 5;
+
     public function middleware()
     {
         if (config('app.env') === 'testing') {

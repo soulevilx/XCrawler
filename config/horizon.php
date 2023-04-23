@@ -99,9 +99,9 @@ return [
     */
 
     'trim' => [
-        'recent' => 60,
-        'pending' => 60,
-        'completed' => 60,
+        'recent' => 1440,
+        'pending' => 1440,
+        'completed' => 1440,
         'recent_failed' => 10080,
         'failed' => 10080,
         'monitored' => 10080,
@@ -187,8 +187,9 @@ return [
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 20,
             'memory' => 1024,
-            'timeout' => 60,
+            'timeout' => 3600,
             'nice' => 0,
+            'minProcesses' => 5,
         ],
         'api' => [
             'connection' => 'redis',
@@ -198,37 +199,25 @@ return [
             'maxProcesses' => 20,
             'memory' => 1024,
             'tries' => 1,
-            'timeout' => 60,
+            'timeout' => 3600,
             'nice' => 0,
+            'minProcesses' => 5,
         ],
     ],
 
     'environments' => [
         'production' => [
             'default' => [
-                'connection' => 'redis',
-                'queue' => ['high', 'low', 'default'],
-                'balance' => 'auto',
-                'autoScalingStrategy' => 'time',
-                'maxProcesses' => 20,
-                'memory' => 1024,
-                'timeout' => 60,
-                'nice' => 0,
             ],
             'api' => [
-                'connection' => 'redis',
-                'queue' => ['api'],
-                'balance' => 'simple',
-                'autoScalingStrategy' => 'time',
-                'maxProcesses' => 20,
-                'memory' => 1024,
-                'tries' => 1,
-                'timeout' => 60,
-                'nice' => 0,
             ],
         ],
 
         'local' => [
+            'default' => [
+            ],
+            'api' => [
+            ],
         ],
     ],
 ];
