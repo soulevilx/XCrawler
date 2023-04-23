@@ -42,10 +42,6 @@ class Factory
         string $level = LogLevel::INFO
     ): self {
 
-        if ($logger === null) {
-            $logger = app(\Illuminate\Log\Logger::class);
-        }
-
         return $this->withMiddleware(
             Middleware::log($logger, new MessageFormatter($format), $level),
             'log'
