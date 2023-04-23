@@ -14,6 +14,7 @@ class ContactObserver
         if (!Queue::where('payload.nsid', $model->nsid)->where('job', Photos::class)->exists()) {
             Queue::create([
                 'queue' => 'api',
+                'state_code' => Queue::STATE_CODE_INIT,
                 'job' => Photos::class,
                 'payload' => [
                     'nsid' => $model->nsid,

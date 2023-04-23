@@ -16,6 +16,7 @@ class PhotoObserver
         if (!Contact::where('nsid', $model->owner)->exists()) {
             Queue::create([
                 'queue' => 'low',
+                'state_code' => Queue::STATE_CODE_INIT,
                 'job' => Owner::class,
                 'payload' => [
                     'nsid' => $model->owner,
@@ -28,6 +29,7 @@ class PhotoObserver
             // Get user' favorites
             Queue::create([
                 'queue' => 'low',
+                'state_code' => Queue::STATE_CODE_INIT,
                 'job' => Favorites::class,
                 'payload' => [
                     'nsid' => $model->owner,

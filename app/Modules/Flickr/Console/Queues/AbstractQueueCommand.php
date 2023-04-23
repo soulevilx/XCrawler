@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Console\Queues;
 
+use App\Modules\Core\Models\Queue;
 use App\Modules\Core\Repositories\QueueRepository;
 use Illuminate\Console\Command;
 
@@ -24,6 +25,9 @@ abstract class AbstractQueueCommand extends Command
         $queues = $repository->getQueues($this->getJob());
 
         foreach ($queues as $queue) {
+            $queue->update([
+                'state_code' => Queue::STATE_CODE_PROCESSING,
+            ]);
             $queue->job::dispatch($queue)->onQueue($queue->queue);
         }
     }

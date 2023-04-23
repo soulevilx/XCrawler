@@ -15,6 +15,7 @@ class QueueRepository
     {
         return $this->queue
             ->where('job', $job)
+            ->where('state_code', Queue::STATE_CODE_INIT)
             ->limit($limit ?? config('core.queues.limit', 10))
             ->get();
     }
