@@ -10,7 +10,7 @@ class Owner extends AbstractFlickrQueues
     {
         $owner = $this->service
             ->people()
-            ->getInfo($this->queue->payload['nsid']);
+            ->getInfo($this->model->payload['nsid']);
 
         Contact::updateOrCreate([
             'nsid' => $owner['nsid'],

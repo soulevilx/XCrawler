@@ -10,7 +10,7 @@ class Photos extends AbstractFlickrQueues
     {
         $photos = $this->service
             ->people()
-            ->getList(['user_id' => $this->queue->payload['nsid']]);
+            ->getList(['user_id' => $this->model->payload['nsid']]);
 
         foreach ($photos as $photo) {
             Photo::updateOrCreate(

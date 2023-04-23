@@ -24,7 +24,7 @@ abstract class AbstractQueueCommand extends Command
         $queues = $repository->getQueues($this->getJob());
 
         foreach ($queues as $queue) {
-            $queue->job::dispatch($queue->payload)->onQueue($queue->queue);
+            $queue->job::dispatch($queue)->onQueue($queue->queue);
         }
     }
 
