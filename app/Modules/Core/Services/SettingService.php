@@ -17,7 +17,7 @@ class SettingService
         return $this;
     }
 
-    public function remember(string $group, string $key, callable $callback) : mixed
+    public function remember(string $group, string $key, callable $callback): mixed
     {
         if ($this->setting->newQuery()->group($group)->key($key)->exists()) {
             return $this->setting->where('group', $group)->where('key', $key)->first()?->value;

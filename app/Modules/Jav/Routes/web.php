@@ -11,6 +11,6 @@
 |
 */
 
-Route::prefix('jav')->group(function() {
+Route::prefix('jav')->group(function () {
     Route::get('/', 'JavController@index');
 });

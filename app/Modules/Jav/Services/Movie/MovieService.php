@@ -17,14 +17,14 @@ class MovieService
         Event::dispatch(new CreatingMovie());
         $movie = app(MovieRepository::class)->create($attributes);
 
-        if (!empty($attributes['genres'])) {
+        if (! empty($attributes['genres'])) {
             Event::dispatch(new CreatingMovieGenre());
             foreach ($attributes['genres'] as $genre) {
                 $movie->genres()->attach(Genre::firstOrCreate(['name' => $genre]));
             }
         }
 
-        if (!empty($attributes['performers'])) {
+        if (! empty($attributes['performers'])) {
             Event::dispatch(new CreatingMoviePerformer());
             foreach ($attributes['performers'] as $performer) {
                 $movie->performers()->attach(Performer::firstOrCreate(['name' => $performer]));

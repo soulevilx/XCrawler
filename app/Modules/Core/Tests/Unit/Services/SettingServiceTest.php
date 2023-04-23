@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class SettingServiceTest extends TestCase
 {
-
     private SettingService $service;
 
     public function setUp(): void
@@ -39,7 +38,6 @@ class SettingServiceTest extends TestCase
         $this->assertEquals('world', $this->service->get('test', 'hello'));
         $this->assertEquals('world', $this->service->remember('test', 'hello', fn() => time()));
         $this->assertEquals('now', $this->service->remember('test', 'now', fn() => 'now'));
-
     }
 
     public function testForget()

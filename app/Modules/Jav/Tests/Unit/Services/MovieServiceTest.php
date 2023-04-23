@@ -18,7 +18,7 @@ class MovieServiceTest extends TestCase
         Event::fake([
             CreatingMovie::class,
             CreatingMovieGenre::class,
-            CreatingMoviePerformer::class
+            CreatingMoviePerformer::class,
         ]);
         $service = app(MovieService::class);
         $dvdId = $this->faker->uuid;

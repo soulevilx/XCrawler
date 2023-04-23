@@ -10,7 +10,6 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -30,6 +29,7 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/../Modules/Core/Console');
         $this->load(__DIR__.'/../Modules/Crawling/Console');
         $this->load(__DIR__.'/../Modules/Jav/Console');
+        $this->load(__DIR__.'/../Modules/Flickr/Console');
 
         require base_path('routes/console.php');
     }

@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\LazyCollection;
 
-
 class OnejavRepository
 {
     public function __construct(public Onejav $model)
@@ -24,7 +23,6 @@ class OnejavRepository
     {
         return Schema::getColumnListing($this->model->getTable());
     }
-
 
     public function create(array $attributes): Model
     {

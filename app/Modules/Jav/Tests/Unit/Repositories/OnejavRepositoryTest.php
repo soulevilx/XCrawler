@@ -18,7 +18,7 @@ class OnejavRepositoryTest extends TestCase
         Event::fake([
             CreatingMovie::class,
             CreatingMovieGenre::class,
-            CreatingMoviePerformer::class
+            CreatingMoviePerformer::class,
         ]);
         $repository = app(OnejavRepository::class);
         $performers = [
@@ -55,7 +55,7 @@ class OnejavRepositoryTest extends TestCase
         Event::fake([
             CreatingMovie::class,
             CreatingMovieGenre::class,
-            CreatingMoviePerformer::class
+            CreatingMoviePerformer::class,
         ]);
         $repository = app(OnejavRepository::class);
         $performers = [
@@ -89,7 +89,7 @@ class OnejavRepositoryTest extends TestCase
         Event::fake([
             CreatingMovie::class,
             CreatingMovieGenre::class,
-            CreatingMoviePerformer::class
+            CreatingMoviePerformer::class,
         ]);
         $repository = app(OnejavRepository::class);
 

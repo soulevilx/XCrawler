@@ -16,14 +16,33 @@ class StorageTest extends TestCase
     /**
      * @dataProvider storageProvider
      */
-    public function testRetrieveAccessToken(TokenStorageInterface $storage)
+    public function testRetrieveAccessNotFound(TokenStorageInterface $storage)
     {
         $this->expectException(TokenNotFoundException::class);
-        $storage->retrieveAccessToken('github');
+        $storage->retrieveAccessToken($this->faker->text);
+    }
 
+    /**
+     * @dataProvider storageProvider
+     */
+    public function testRetrieveAccess(TokenStorageInterface $storage)
+    {
         $storage->storeAccessToken('github', app(Token::class));
         $this->assertTrue($storage->hasAccessToken('github'));
         $this->assertInstanceOf(Token::class, $storage->retrieveAccessToken('github'));
+
+        $this->expectException(TokenNotFoundException::class);
+        $storage->clearAllTokens();
+        $storage->retrieveAccessToken('github');
+    }
+
+    /**
+     * @dataProvider storageProvider
+     */
+    public function testStoreAuthorizationState(TokenStorageInterface $storage)
+    {
+        $storage->storeAuthorizationState('github', 'state');
+        $this->assertEquals('state', $storage->retrieveAuthorizationState('github'));
     }
 
     public function storageProvider()
@@ -31,10 +50,19 @@ class StorageTest extends TestCase
         return [
             [
                 app(Memory::class),
-                app(Redis::class),
-                app(Session::class),
-                app(SymfonySession::class),
+
             ],
+            [
+                app(Redis::class),
+
+            ],
+            [
+                app(Session::class),
+
+            ],
+            [
+                app(SymfonySession::class),
+            ]
         ];
     }
 }

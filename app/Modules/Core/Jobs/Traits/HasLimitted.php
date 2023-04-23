@@ -19,12 +19,12 @@ trait HasLimitted
                 $this->block ?? 1,
                 $this->allow ?? 1,
                 $this->every ?? 1,
-            )
+            ),
         ];
     }
 
     public function retryUntil()
     {
-        return now()->addMinutes(Setting::remember('core', 'job_retryUntil', fn() => 60));
+        return now()->addMinutes(Setting::remember('core', 'job_retryUntil', fn () => 60));
     }
 }

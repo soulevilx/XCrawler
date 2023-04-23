@@ -2,8 +2,8 @@
 
 namespace Tests;
 
+use App\Modules\Core\Models\RequestLog;
 use App\Modules\Core\Models\Setting;
-use App\Modules\Crawling\Models\RequestLog;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -14,7 +14,6 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use WithFaker;
     use DatabaseMigrations;
-
     use RefreshDatabase {
         RefreshDatabase::refreshDatabase as refreshSchema;
     }

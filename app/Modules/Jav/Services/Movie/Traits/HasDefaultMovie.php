@@ -13,8 +13,6 @@ trait HasDefaultMovie
 
     /**
      * DVD ID usually come with format likely: ABW-226
-     *
-     * @return string|null
      */
     public function getDvdId(): ?string
     {
@@ -23,8 +21,6 @@ trait HasDefaultMovie
 
     /**
      * Content ID usually come with format likely: nkkvr00029
-     *
-     * @return string|null
      */
     public function getContentId(): ?string
     {
@@ -40,7 +36,6 @@ trait HasDefaultMovie
     {
         return $this->performers ?? [];
     }
-
 
     public function getCover(): ?string
     {

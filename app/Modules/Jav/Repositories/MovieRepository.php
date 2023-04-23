@@ -24,7 +24,6 @@ class MovieRepository
         return Schema::getColumnListing($this->model->getTable());
     }
 
-
     public function create(array $attributes): Model
     {
         return $this->model->updateOrCreate(

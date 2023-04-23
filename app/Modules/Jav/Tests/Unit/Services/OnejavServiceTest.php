@@ -3,10 +3,10 @@
 namespace App\Modules\Jav\Tests\Unit\Services;
 
 use App\Modules\Core\Facades\Setting;
-use App\Modules\Core\Services\XClient\XClient;
+use App\Modules\Core\XClient\XClient;
+use App\Modules\Jav\Crawlers\OnejavCrawler;
 use App\Modules\Jav\Events\OnejavAllProcessing;
 use App\Modules\Jav\Events\OnejavItemsRecursing;
-use App\Modules\Jav\Services\Crawlers\OnejavCrawlerAdapter;
 use App\Modules\Jav\Services\OnejavService;
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Response;
@@ -35,10 +35,9 @@ class OnejavServiceTest extends TestCase
 
                     $mock->shouldReceive('request')
                         ->with(
-
-                            OnejavCrawlerAdapter::BASE_URL.'/'.Carbon::now()->format(OnejavCrawlerAdapter::DEFAULT_DATE_FORMAT),
+                            OnejavCrawler::BASE_URL.'/'.Carbon::now()->format(OnejavCrawler::DEFAULT_DATE_FORMAT),
                             [
-                                'page' => $index
+                                'page' => $index,
                             ],
                             'GET'
                         )->andReturn($response);
@@ -72,9 +71,9 @@ class OnejavServiceTest extends TestCase
                     $mock->shouldReceive('request')
                         ->with(
 
-                            OnejavCrawlerAdapter::BASE_URL.'/new',
+                            OnejavCrawler::BASE_URL.'/new',
                             [
-                                'page' => $index
+                                'page' => $index,
                             ],
                             'GET'
                         )->andReturn($response);
@@ -91,11 +90,11 @@ class OnejavServiceTest extends TestCase
         $service->all(); // 3
         $service->all(); // 4
         $service->all(); // 5
+        $service->all(); // 6
 
         $this->assertEquals(6, Setting::get('onejav', 'pages'));
         $this->assertEquals(6, Setting::get('onejav', 'current_page'));
 
-        Event::assertDispatchedTimes(OnejavAllProcessing::class, 5);
+        Event::assertDispatchedTimes(OnejavAllProcessing::class, 6);
     }
-
 }

@@ -2,9 +2,7 @@
 
 namespace App\Modules\Jav\Services\Movie\Traits;
 
-use App\Modules\Jav\Events\CreatingMovie;
 use App\Modules\Jav\Services\Movie\Observers\MovieObserver;
-use Illuminate\Support\Facades\Event;
 
 trait HasMovie
 {
