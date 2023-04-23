@@ -28,6 +28,10 @@ abstract class AbstractFlickrQueues implements ShouldQueue
      */
     public function handle()
     {
+        if (!$this->model) {
+            return 0;
+        }
+
         if ($this->process()) {
             $this->model->delete();
         }
