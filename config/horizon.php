@@ -182,10 +182,10 @@ return [
     'defaults' => [
         'high' => [
             'connection' => 'redis',
-            'queue' => ['high'],
+            'queue' => ['high', 'low'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'maxProcesses' => 20,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -198,10 +198,10 @@ return [
             'queue' => ['low'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'maxProcesses' => 20,
             'maxTime' => 0,
             'maxJobs' => 0,
-            'memory' => 128,
+            'memory' => 1024,
             'tries' => 1,
             'timeout' => 60,
             'nice' => 0,
@@ -221,12 +221,6 @@ return [
         ],
 
         'local' => [
-            'high' => [
-                'maxProcesses' => 3,
-            ],
-            'low' => [
-                'maxProcesses' => 10,
-            ]
         ],
     ],
 ];
