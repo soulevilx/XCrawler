@@ -29,7 +29,7 @@ class All extends Command
     public function handle()
     {
         OnejavAll::dispatch()
-            ->onQueue('high');
+            ->onQueue('low');
 
         return 0;
     }

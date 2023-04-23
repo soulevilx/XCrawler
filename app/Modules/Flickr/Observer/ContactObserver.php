@@ -13,7 +13,7 @@ class ContactObserver
         // Get user's photos
         if (!Queue::where('payload.nsid', $model->nsid)->where('job', Photos::class)->exists()) {
             Queue::create([
-                'queue' => 'low',
+                'queue' => 'api',
                 'job' => Photos::class,
                 'payload' => [
                     'nsid' => $model->nsid,

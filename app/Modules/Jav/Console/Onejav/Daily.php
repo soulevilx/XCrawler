@@ -29,7 +29,7 @@ class Daily extends Command
     public function handle()
     {
         OnejavDaily::dispatch()
-            ->onQueue('high');
+            ->onQueue('low');
 
         return 0;
     }

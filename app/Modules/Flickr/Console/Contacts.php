@@ -27,6 +27,6 @@ class Contacts extends Command
      */
     public function handle()
     {
-        \App\Modules\Flickr\Jobs\Contacts::dispatch()->onQueue('low');
+        \App\Modules\Flickr\Jobs\Contacts::dispatch()->onQueue('api');
     }
 }
