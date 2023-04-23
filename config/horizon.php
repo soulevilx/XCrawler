@@ -186,10 +186,7 @@ return [
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 20,
-            'maxTime' => 0,
-            'maxJobs' => 0,
             'memory' => 1024,
-            'tries' => 1,
             'timeout' => 60,
             'nice' => 0,
         ],
@@ -198,9 +195,7 @@ return [
             'queue' => ['api'],
             'balance' => 'simple',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 10,
-            'maxTime' => 0,
-            'maxJobs' => 0,
+            'maxProcesses' => 20,
             'memory' => 1024,
             'tries' => 1,
             'timeout' => 60,
@@ -210,6 +205,27 @@ return [
 
     'environments' => [
         'production' => [
+            'default' => [
+                'connection' => 'redis',
+                'queue' => ['high', 'low', 'default'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'time',
+                'maxProcesses' => 20,
+                'memory' => 1024,
+                'timeout' => 60,
+                'nice' => 0,
+            ],
+            'api' => [
+                'connection' => 'redis',
+                'queue' => ['api'],
+                'balance' => 'simple',
+                'autoScalingStrategy' => 'time',
+                'maxProcesses' => 20,
+                'memory' => 1024,
+                'tries' => 1,
+                'timeout' => 60,
+                'nice' => 0,
+            ],
         ],
 
         'local' => [
