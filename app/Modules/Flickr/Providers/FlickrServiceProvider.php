@@ -2,6 +2,10 @@
 
 namespace App\Modules\Flickr\Providers;
 
+use App\Modules\Flickr\Models\Contact;
+use App\Modules\Flickr\Models\Photo;
+use App\Modules\Flickr\Observer\ContactObserver;
+use App\Modules\Flickr\Observer\PhotoObserver;
 use Illuminate\Support\ServiceProvider;
 
 class FlickrServiceProvider extends ServiceProvider
@@ -27,6 +31,9 @@ class FlickrServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        Contact::observe(ContactObserver::class);
+        Photo::observe(PhotoObserver::class);
     }
 
     /**

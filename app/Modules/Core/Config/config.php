@@ -16,4 +16,7 @@ return [
         'secret' => env('FLICKR_SECRET'),
         'callback' => env('FLICKR_CALLBACK'),
     ],
+    'queues' => [
+        'limit' => 10,
+    ]
 ];

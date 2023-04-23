@@ -16,6 +16,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('jav:onejav-daily')->daily();
         $schedule->command('jav:onejav-all')->everyMinute();
+
+        /**
+         * Flickr
+         */
+        $schedule->command('flickr:contacts')->weekly();
+        $schedule->command('flickr:queues-favorites')->everyMinute();
+        $schedule->command('flickr:queues-owner')->everyMinute();
+        $schedule->command('flickr:queues-photos')->everyMinute();
     }
 
     /**

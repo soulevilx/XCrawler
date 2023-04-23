@@ -2,23 +2,25 @@
 
 namespace App\Modules\Flickr\Services;
 
-use App\Modules\Core\OAuth\OauthService;
-use App\Modules\Core\Services\OAuth\Adapters\FlickrAdapter;
+
 use App\Modules\Flickr\Services\Adapters\Contacts;
+use App\Modules\Flickr\Services\Adapters\Favorites;
+use App\Modules\Flickr\Services\Adapters\People;
 
 class FlickrService
 {
-    private mixed $client;
-
-    public function __construct()
+    public function contacts(): Contacts
     {
-        $this->client = app()->makeWith(OauthService::class, [
-            'adapter' => app(FlickrAdapter::class),
-        ]);
+        return app(Contacts::class);
     }
 
-   public function contacts()
-   {
-       return new Contacts($this->adapter);
-   }
+    public function people(): People
+    {
+        return app(People::class);
+    }
+
+    public function favorites(): Favorites
+    {
+        return app(Favorites::class);
+    }
 }
