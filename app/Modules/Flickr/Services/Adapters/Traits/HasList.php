@@ -17,6 +17,10 @@ trait HasList
             [...$this->listFilter, ...$filter]
         )->getData();
 
+        if (!isset($data[$this->listEntities])) {
+            return [];
+        }
+
         $this->list = [...$this->list, ...$data[$this->listEntities][$this->listEntity]];
 
             $page = $data[$this->listEntities]['page'];
