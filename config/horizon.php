@@ -225,7 +225,7 @@ return [
                 'maxProcesses' => 3,
             ],
             'low' => [
-                'maxProcesses' => 1,
+                'maxProcesses' => 10,
             ]
         ],
     ],
