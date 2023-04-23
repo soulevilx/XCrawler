@@ -21,9 +21,9 @@ class Kernel extends ConsoleKernel
          * Flickr
          */
         $schedule->command('flickr:contacts')->weekly();
-        $schedule->command('flickr:queues-favorites')->everyMinute();
-        $schedule->command('flickr:queues-owner')->everyMinute();
-        $schedule->command('flickr:queues-photos')->everyMinute();
+        $schedule->command('flickr:queues-favorites')->everyFiveMinutes();
+        $schedule->command('flickr:queues-owner')->everyFiveMinutes();
+        $schedule->command('flickr:queues-photos')->everyFiveMinutes();
     }
 
     /**

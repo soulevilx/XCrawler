@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\OAuth\OAuth1\Providers;
 
+use App\Modules\Core\Models\OAuthLog;
 use App\Modules\Core\OAuth\OAuth1\Token\Token;
 use App\Modules\Core\OAuth\OAuth1\Token\TokenInterface;
 use App\Modules\Core\OAuth\Storage\TokenStorageInterface;
@@ -121,6 +122,13 @@ class Flickr extends AbstractProvider
             $body,
             $method
         );
+
+        OAuthLog::create([
+            'service' => $this->service(),
+            'path' => $path,
+            'params' => $body,
+            'method' => $method,
+        ]);
 
         return new FlickrResponse($response);
     }

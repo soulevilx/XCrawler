@@ -11,7 +11,7 @@ class RequestLog extends Model
 
     protected $connection = 'mongodb';
 
-    public const TABLE_NAME = 'request_logs';
+    protected $collection = 'request_logs';
 
     protected $fillable = [
         'url',

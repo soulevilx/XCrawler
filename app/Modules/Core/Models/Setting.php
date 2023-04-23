@@ -11,6 +11,8 @@ class Setting extends Model
 
     protected $connection = 'mongodb';
 
+    protected $collection = 'settings';
+
     protected $fillable = [
         'group',
         'key',
