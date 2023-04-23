@@ -15,5 +15,7 @@ class Owner extends AbstractFlickrQueues
         Contact::updateOrCreate([
             'nsid' => $owner['nsid'],
         ], $owner);
+
+        return true;
     }
 }
