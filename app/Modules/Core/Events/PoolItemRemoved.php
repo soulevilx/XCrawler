@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Modules\Jav\Events;
+namespace App\Modules\Core\Events;
 
+use App\Modules\Core\Models\Pool;
 use Illuminate\Queue\SerializesModels;
 
-class OnejavAllProcessing
+class PoolItemRemoved
 {
     use SerializesModels;
 
@@ -13,7 +14,7 @@ class OnejavAllProcessing
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public Pool $pool)
     {
         //
     }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Modules\Flickr\Listeners\FlickrSubscriber;
 use App\Modules\Jav\Listeners\OnejavSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -11,6 +12,7 @@ class EventServiceProvider extends ServiceProvider
 {
     protected $subscribe = [
         OnejavSubscriber::class,
+        FlickrSubscriber::class,
     ];
 
     /**

@@ -5,8 +5,7 @@ namespace App\Modules\Jav\Crawlers;
 use App\Modules\Core\Services\CrawlerFactory;
 use App\Modules\Core\Services\CrawlingService;
 use App\Modules\Core\XClient\Adapters\DomClientAdapter;
-use App\Modules\Jav\Events\OnejavItemParsed;
-use App\Modules\Jav\Events\OnejavItemsRecursing;
+use App\Modules\Jav\Events\Onejav\OnejavItemParsed;
 use ArrayObject;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -20,22 +19,32 @@ class OnejavCrawler
     public const DEFAULT_DATE_FORMAT = 'Y/m/d';
     private CrawlingService $service;
 
+    private int $lastPage = 1;
+
     public function __construct()
     {
         $this->service = app(CrawlerFactory::class)
             ->make(app(DomClientAdapter::class));
     }
 
-    public function items(string $url, array $data = []): Collection
+    public function lastPage(): int
     {
-        $data = $data['page'] ?? 1;
-        $data = $data['payload'] ?? [];
+        return $this->lastPage;
+    }
 
-        $response = $this->service->request('GET', $url, $data);
+    public function items(string $url, array $payload = []): Collection
+    {
+        $payload['page'] = $payload['page'] ?? 1;
+
+        $response = $this->service->request('GET', self::BASE_URL.'/'.$url, $payload);
 
         if (!$response->isSuccess()) {
             return collect();
         }
+
+        $dom = $response->getData();
+        $pageNode = $dom->filter('a.pagination-link')->last();
+        $this->lastPage = $pageNode->count() === 0 ? 1 : (int) $pageNode->text();
 
         return collect(
             $response->getData()->filter('.container .columns')
@@ -43,99 +52,6 @@ class OnejavCrawler
                     return $this->parse($el);
                 })
         );
-    }
-
-    public function daily(): Collection
-    {
-        $items = collect();
-        $this->itemsWithPageRecursive(
-            $items,
-            Carbon::now()->format(self::DEFAULT_DATE_FORMAT)
-        );
-
-        return $items;
-    }
-
-    public function search(string $keyword, string $by = 'search'): Collection
-    {
-        $items = collect();
-        $this->itemsWithPageRecursive(
-            $items,
-            $by.'/'.urlencode($keyword)
-        );
-
-        return $items;
-    }
-
-    public function itemsWithPage(
-        Collection &$items,
-        string $url,
-        array $payload = []
-    ): int {
-        $currentPage = !empty($payload['page']) ? $payload['page'] : 1;
-        if (empty($payload['page'])) {
-            $payload['page'] = $currentPage;
-        }
-
-        $response = $this->service->request(
-            'GET',
-            self::BASE_URL.'/'.$url,
-            $payload
-        );
-
-        if (!$response->isSuccess()) {
-            return 1;
-        }
-
-        $dom = $response->getData();
-        $pageNode = $dom->filter('a.pagination-link')->last();
-
-        $lastPage = 0 === $pageNode->count() ? 1 : (int) $pageNode->text();
-
-        $items = $items->merge(
-            collect($dom->filter('.container .columns')->each(function ($el) {
-                return $this->parse($el);
-            }))
-        );
-
-        return $lastPage;
-    }
-
-    public function itemsWithPageRecursive(Collection &$items, string $url, array $payload = []): int
-    {
-        $currentPage = !empty($payload['page']) ? $payload['page'] : 1;
-        if (empty($payload['page'])) {
-            $payload['page'] = $currentPage;
-        }
-
-        $response = $this->service->request(
-            'GET',
-            self::BASE_URL.'/'.$url,
-            $payload
-        );
-
-        if (!$response->isSuccess()) {
-            return 1;
-        }
-
-        $dom = $response->getData();
-        $pageNode = $dom->filter('a.pagination-link')->last();
-
-        $lastPage = 0 === $pageNode->count() ? 1 : (int) $pageNode->text();
-
-        $items = $items->merge(
-            collect($dom->filter('.container .columns')->each(function ($el) {
-                return $this->parse($el);
-            }))
-        );
-
-        if (empty($payload) || $payload['page'] < $lastPage) {
-            Event::dispatch(new OnejavItemsRecursing());
-            sleep(1);
-            $lastPage = $this->itemsWithPageRecursive($items, $url, ['page' => $currentPage + 1]);
-        }
-
-        return $lastPage;
     }
 
     private function parse(Crawler $crawler): ?ArrayObject

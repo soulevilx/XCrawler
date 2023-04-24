@@ -15,7 +15,7 @@ class FlickrResponse extends JsonResponse
     {
         $this->data = $this->cleanTextNodes(parent::getData());
 
-        return $this->data;
+        return $this->data ?? [];
     }
 
     private function cleanTextNodes($arr)

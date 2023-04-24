@@ -37,7 +37,7 @@ class Factory
     }
 
     public function enableLogging(
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger,
         string $format = MessageFormatter::SHORT,
         string $level = LogLevel::INFO
     ): self {

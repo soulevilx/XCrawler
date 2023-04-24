@@ -2,14 +2,14 @@
 
 namespace App\Modules\Flickr\Console\Queues;
 
-use App\Modules\Core\Models\Queue;
-use App\Modules\Core\Repositories\QueueRepository;
+use App\Modules\Core\Facades\Pool;
+use App\Modules\Core\Repositories\PoolRepository;
 use Illuminate\Console\Command;
 
 abstract class AbstractQueueCommand extends Command
 {
     public function __construct(
-        protected QueueRepository $repository,
+        protected PoolRepository $repository,
     ) {
         parent::__construct();
     }
@@ -21,15 +21,16 @@ abstract class AbstractQueueCommand extends Command
      */
     public function handle()
     {
-        $repository = app(QueueRepository::class);
-        $queues = $repository->getQueues($this->getJob());
+        $queues = Pool::getPoolItems(
+            $this->getJob(),
+            config('flickr.pool.limit')
+        );
 
         foreach ($queues as $queue) {
-            $queue->update([
-                'state_code' => Queue::STATE_CODE_PROCESSING,
-            ]);
-            $queue->job::dispatch($queue)->onQueue($queue->queue);
+            $queue->job::dispatch($queue);
         }
+
+        return 0;
     }
 
     abstract protected function getJob(): string;

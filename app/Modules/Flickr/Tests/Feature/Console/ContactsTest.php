@@ -2,7 +2,7 @@
 
 namespace App\Modules\Flickr\Tests\Feature\Console;
 
-use App\Modules\Core\Models\Queue;
+use App\Modules\Core\Models\Pool;
 use App\Modules\Flickr\Jobs\Queues\Owner;
 use App\Modules\Flickr\Jobs\Queues\Photos;
 use App\Modules\Flickr\Models\Contact;
@@ -13,7 +13,7 @@ class ContactsTest extends TestCase
 {
     public function testCreatedObserver()
     {
-        Queue::truncate();
+        Pool::truncate();
         Photo::truncate();
         Contact::truncate();
 
@@ -24,11 +24,11 @@ class ContactsTest extends TestCase
             'nsid' => $contact->nsid,
         ]);
 
-        $this->assertDatabaseHas('queues', [
+        $this->assertDatabaseHas('pool', [
             'job' => Photos::class,
         ], 'mongodb');
 
-        $queues = Queue::where('payload.nsid', $contact->nsid)->where('job', Photos::class)->get();
+        $queues = Pool::where('payload.nsid', $contact->nsid)->where('job', Photos::class)->get();
 
         $this->assertEquals(1, $queues->count());
 
@@ -38,7 +38,7 @@ class ContactsTest extends TestCase
         ]);
 
         // This contact already exists
-        $this->assertFalse(Queue::where('payload.nsid', $contact->nsid)->where('job', Owner::class)->exists());
+        $this->assertFalse(Pool::where('payload.nsid', $contact->nsid)->where('job', Owner::class)->exists());
 
         $photo = Photo::create([
             'id' => $this->faker->uuid,
@@ -46,6 +46,6 @@ class ContactsTest extends TestCase
         ]);
 
         // This contact doesn't exist
-        $this->assertTrue(Queue::where('payload.nsid', $photo->owner)->where('job', Owner::class)->exists());
+        $this->assertTrue(Pool::where('payload.nsid', $photo->owner)->where('job', Owner::class)->exists());
     }
 }

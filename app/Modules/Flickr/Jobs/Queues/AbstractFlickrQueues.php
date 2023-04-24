@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Jobs\Queues;
 
+use App\Modules\Core\Facades\Pool;
 use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,32 +15,19 @@ abstract class AbstractFlickrQueues implements ShouldQueue
 
     public FlickrService $service;
 
-    /**
-     * Delete the job if its models no longer exist.
-     *
-     * @var bool
-     */
-    public $deleteWhenMissingModels = true;
-
-
     public function __construct(public $model)
     {
         $this->service = app(FlickrService::class);
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
+    public function handle(): int
     {
         if (!$this->model) {
             return 0;
         }
 
         if ($this->process()) {
-            $this->model->delete();
+            Pool::remove($this->model);
         }
 
         return 0;

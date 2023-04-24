@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Console;
 
+use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Console\Command;
 
 class Contacts extends Command
@@ -27,6 +28,6 @@ class Contacts extends Command
      */
     public function handle()
     {
-        \App\Modules\Flickr\Jobs\Contacts::dispatch()->onQueue('api');
+        app(FlickrService::class)->contacts()->getList();
     }
 }

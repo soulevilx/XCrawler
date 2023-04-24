@@ -2,12 +2,14 @@
 
 namespace Tests;
 
+use App\Modules\Core\Models\Pool;
 use App\Modules\Core\Models\RequestLog;
 use App\Modules\Core\Models\Setting;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\App;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -20,8 +22,11 @@ abstract class TestCase extends BaseTestCase
 
     public function refreshDatabase()
     {
-        Setting::truncate();
-        RequestLog::truncate();
+        if (App::environment('testing')) {
+            Setting::truncate();
+            RequestLog::truncate();
+            Pool::truncate();
+        }
 
         $this->artisan('db:wipe');
         $this->artisan('migrate:fresh');

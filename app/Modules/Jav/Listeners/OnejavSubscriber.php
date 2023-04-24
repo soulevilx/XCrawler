@@ -2,7 +2,7 @@
 
 namespace App\Modules\Jav\Listeners;
 
-use App\Modules\Jav\Events\OnejavItemParsed;
+use App\Modules\Jav\Events\Onejav\OnejavItemParsed;
 use App\Modules\Jav\Services\OnejavService;
 
 class OnejavSubscriber

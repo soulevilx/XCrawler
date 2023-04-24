@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Jav\Events;
+namespace App\Modules\Jav\Events\Onejav;
 
 use Illuminate\Queue\SerializesModels;
 

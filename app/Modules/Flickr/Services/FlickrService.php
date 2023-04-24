@@ -2,7 +2,6 @@
 
 namespace App\Modules\Flickr\Services;
 
-
 use App\Modules\Flickr\Services\Adapters\Contacts;
 use App\Modules\Flickr\Services\Adapters\Favorites;
 use App\Modules\Flickr\Services\Adapters\People;

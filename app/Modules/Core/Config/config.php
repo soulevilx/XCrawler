@@ -11,12 +11,12 @@ return [
     'oauth' => [
         'storage' => 'memory',
     ],
-    'flickr'=> [
+    'flickr' => [
         'key' => env('FLICKR_KEY'),
         'secret' => env('FLICKR_SECRET'),
         'callback' => env('FLICKR_CALLBACK'),
     ],
-    'queues' => [
-        'limit' => 10,
+    'pool' => [
+        'limit' => env('POOL_LIMIT', 5)
     ]
 ];

@@ -4,9 +4,7 @@ namespace App\Modules\Jav\Tests\Unit\Crawlers;
 
 use App\Modules\Core\XClient\XClient;
 use App\Modules\Jav\Crawlers\OnejavCrawler;
-use App\Modules\Jav\Events\OnejavItemParsed;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Facades\Event;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -28,19 +26,38 @@ class OnejavCrawlerTest extends TestCase
 
                 $mock->shouldReceive('init');
                 $mock->shouldReceive('setHeaders');
-                $mock->shouldReceive('request')->andReturn($response);
+                $mock->shouldReceive('request')
+                    ->with(
+                        OnejavCrawler::BASE_URL.'/items',
+                        [
+                            'page' => 1,
+                        ],
+                        'GET'
+                    )
+                    ->andReturn($response);
+
+                $response = new Response(
+                    200,
+                    [],
+                    file_get_contents(__DIR__.'/../../Fixtures/Onejav/iori_tsukimi_2.html'),
+                    '1.1',
+                    'OK'
+                );
+                $mock->shouldReceive('request')
+                    ->with(
+                        OnejavCrawler::BASE_URL.'/items',
+                        [
+                            'page' => 2,
+                        ],
+                        'GET'
+                    )
+                    ->andReturn($response);
             })
         );
 
         $client = app(OnejavCrawler::class);
 
-        $items = $client->items(
-            $this->faker->url,
-            [
-                'page' => 1,
-                'payload' => [],
-            ]
-        );
+        $items = $client->items('items', ['page' => 1]);
 
         $this->assertCount(10, $items);
 
@@ -109,43 +126,10 @@ class OnejavCrawlerTest extends TestCase
                 ]);
             }
         }
-    }
 
-    public function testCrawItemsRecursive()
-    {
-        Event::fake([OnejavItemParsed::class]);
-        $this->instance(
-            XClient::class,
-            Mockery::mock(XClient::class, function (MockInterface $mock) {
-                $mock->shouldReceive('init');
-                $mock->shouldReceive('setHeaders');
-                for ($index = 1; $index <= 2; $index++) {
-                    $response = new Response(
-                        200,
-                        [],
-                        file_get_contents(__DIR__.'/../../Fixtures/Onejav/iori_tsukimi_'.$index.'.html'),
-                    );
+        $this->assertEquals(2, $client->lastPage());
 
-                    $mock->shouldReceive('request')
-                        ->with(
-                            OnejavCrawler::BASE_URL.'/actress/Iori Tsukimi',
-                            [
-                                'page' => $index,
-                            ],
-                            'GET'
-                        )->andReturn($response);
-                }
-            })
-        );
-
-        $client = app(OnejavCrawler::class);
-        $items = collect();
-        $client->itemsWithPageRecursive(
-            $items,
-            'actress/Iori Tsukimi',
-        );
-
-        $this->assertCount(15, $items);
-        Event::assertDispatchedTimes(OnejavItemParsed::class, 15);
+        $client->items('items', ['page' => 2]);
+        $this->assertEquals(2, $client->lastPage());
     }
 }

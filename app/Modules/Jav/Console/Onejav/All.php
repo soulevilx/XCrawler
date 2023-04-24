@@ -2,7 +2,7 @@
 
 namespace App\Modules\Jav\Console\Onejav;
 
-use App\Modules\Jav\Jobs\OnejavAll;
+use App\Modules\Jav\Jobs\Onejav\OnejavAll;
 use Illuminate\Console\Command;
 
 class All extends Command

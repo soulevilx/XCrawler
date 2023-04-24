@@ -4,9 +4,11 @@ namespace App\Modules\Jav\Services;
 
 use App\Modules\Core\Facades\Setting;
 use App\Modules\Jav\Crawlers\OnejavCrawler;
-use App\Modules\Jav\Events\OnejavAllProcessing;
+use App\Modules\Jav\Events\Onejav\OnejavAllCompleted;
+use App\Modules\Jav\Events\Onejav\OnejavAllProcessing;
+use App\Modules\Jav\Jobs\Onejav\FetchItems;
 use App\Modules\Jav\Repositories\OnejavRepository;
-use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 
 class OnejavService
@@ -15,28 +17,24 @@ class OnejavService
     {
     }
 
-    public function daily(): Collection
+    public function daily()
     {
-        return $this->crawler->daily();
+        FetchItems::dispatch(Carbon::now()->format(OnejavCrawler::DEFAULT_DATE_FORMAT));
     }
 
     public function all()
     {
-        $currentPage = Setting::remember('onejav', 'current_page', fn () => 0);
+        $currentPage = Setting::remember('onejav', 'current_page', fn () => 1);
 
         Event::dispatch(new OnejavAllProcessing($currentPage));
 
-        $items = collect();
-        $lastPage = $this->crawler->itemsWithPage(
-            $items,
-            'new',
-            ['page' => $currentPage + 1],
-        );
+        $this->crawler->items('new', ['page' => $currentPage ]);
+        $lastPage = $this->crawler->lastPage();
 
-        if ($currentPage === $lastPage || $currentPage > $lastPage) {
+        if ($currentPage >= $lastPage) {
             $currentPage = 0;
+            Event::dispatch(new OnejavAllCompleted);
         }
-
 
         Setting::forget('onejav', 'pages');
         Setting::remember('onejav', 'pages', fn () => $lastPage);

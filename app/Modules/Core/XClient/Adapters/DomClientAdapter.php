@@ -16,10 +16,10 @@ class DomClientAdapter extends AbstractBaseClient
     ): XClientResponseInterface {
         try {
             $response = new DomResponse($this->client->request($url, $payload, $method));
-
         } catch (ClientException $e) {
             $response = new DomResponse($e->getResponse());
         } finally {
+
             if (!isset($response)) {
                 $response = new DomResponse(null);
             }

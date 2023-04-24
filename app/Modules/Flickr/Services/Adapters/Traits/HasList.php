@@ -2,6 +2,8 @@
 
 namespace App\Modules\Flickr\Services\Adapters\Traits;
 
+use App\Modules\Flickr\Jobs\GetList;
+
 trait HasList
 {
     protected array $listFilter = [
@@ -10,30 +12,13 @@ trait HasList
 
     protected array $list = [];
 
-    public function getList(array $filter = [])
+    public function getList(array $filter = []): void
     {
-        $data = $this->provider->request(
+        GetList::dispatch(
             $this->getListMethod,
+            self::LIST_ENTITIES,
+            self::LIST_ENTITY,
             [...$this->listFilter, ...$filter]
-        )->getData();
-
-        if (!isset($data[$this->listEntities])) {
-            return [];
-        }
-
-        $this->list = [...$this->list, ...$data[$this->listEntities][$this->listEntity]];
-
-            $page = $data[$this->listEntities]['page'];
-            $pages = $data[$this->listEntities]['pages'];
-
-        if ($page < $pages) {
-            sleep(1);
-            $this->getList(
-                [...$filter, 'page' => $page + 1]
-            );
-        }
-
-
-        return $this->list;
+        );
     }
 }

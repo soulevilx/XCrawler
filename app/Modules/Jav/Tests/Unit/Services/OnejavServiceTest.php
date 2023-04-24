@@ -5,8 +5,8 @@ namespace App\Modules\Jav\Tests\Unit\Services;
 use App\Modules\Core\Facades\Setting;
 use App\Modules\Core\XClient\XClient;
 use App\Modules\Jav\Crawlers\OnejavCrawler;
-use App\Modules\Jav\Events\OnejavAllProcessing;
-use App\Modules\Jav\Events\OnejavItemsRecursing;
+use App\Modules\Jav\Events\Onejav\OnejavAllCompleted;
+use App\Modules\Jav\Events\Onejav\OnejavAllProcessing;
 use App\Modules\Jav\Services\OnejavService;
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Response;
@@ -19,8 +19,6 @@ class OnejavServiceTest extends TestCase
 {
     public function testDaily()
     {
-        Event::fake([OnejavItemsRecursing::class]);
-
         $this->instance(
             XClient::class,
             Mockery::mock(XClient::class, function (MockInterface $mock) {
@@ -45,17 +43,16 @@ class OnejavServiceTest extends TestCase
             })
         );
 
-        $service = app(OnejavService::class);
-        $items = $service->daily();
-
-        $this->assertCount(53, $items);
-        $this->assertDatabaseCount('onejav', $items->count());
-        Event::assertDispatched(OnejavItemsRecursing::class, 5);
+        app(OnejavService::class)->daily();
+        $this->assertDatabaseCount('onejav', 53);
     }
 
     public function testAll()
     {
-        Event::fake([OnejavAllProcessing::class]);
+        Event::fake([
+            OnejavAllProcessing::class,
+            OnejavAllCompleted::class
+        ]);
         $this->instance(
             XClient::class,
             Mockery::mock(XClient::class, function (MockInterface $mock) {
@@ -86,15 +83,25 @@ class OnejavServiceTest extends TestCase
 
         $service = app(OnejavService::class);
         $service->all(); // 1
+        $this->assertEquals(4, Setting::get('onejav', 'pages'));
+        $this->assertEquals(2, Setting::get('onejav', 'current_page'));
         $service->all(); // 2
+        $this->assertEquals(5, Setting::get('onejav', 'pages'));
+        $this->assertEquals(3, Setting::get('onejav', 'current_page'));
         $service->all(); // 3
+        $this->assertEquals(6, Setting::get('onejav', 'pages'));
+        $this->assertEquals(4, Setting::get('onejav', 'current_page'));
         $service->all(); // 4
+        $this->assertEquals(6, Setting::get('onejav', 'pages'));
+        $this->assertEquals(5, Setting::get('onejav', 'current_page'));
         $service->all(); // 5
-        $service->all(); // 6
-
         $this->assertEquals(6, Setting::get('onejav', 'pages'));
         $this->assertEquals(6, Setting::get('onejav', 'current_page'));
+        $service->all(); // 6
+        $this->assertEquals(6, Setting::get('onejav', 'pages'));
+        $this->assertEquals(1, Setting::get('onejav', 'current_page'));
 
         Event::assertDispatchedTimes(OnejavAllProcessing::class, 6);
+        Event::assertDispatched(OnejavAllCompleted::class);
     }
 }

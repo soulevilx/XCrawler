@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Modules\Jav\Jobs;
+namespace App\Modules\Jav\Jobs\Onejav;
 
-use App\Modules\Core\Jobs\Traits\HasLimitted;
 use App\Modules\Jav\Services\OnejavService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,18 +12,6 @@ use Illuminate\Queue\SerializesModels;
 class OnejavAll implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    use HasLimitted;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $service = app(OnejavService::class);
-        $service->all();
-    }
 
     /**
      * Execute the job.
@@ -33,6 +20,6 @@ class OnejavAll implements ShouldQueue
      */
     public function handle()
     {
-        //
+        app(OnejavService::class)->all();
     }
 }

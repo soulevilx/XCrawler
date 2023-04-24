@@ -2,7 +2,7 @@
 
 namespace App\Modules\Jav\Console\Onejav;
 
-use App\Modules\Jav\Jobs\OnejavDaily;
+use App\Modules\Jav\Services\OnejavService;
 use Illuminate\Console\Command;
 
 class Daily extends Command
@@ -28,8 +28,7 @@ class Daily extends Command
      */
     public function handle()
     {
-        OnejavDaily::dispatch()
-            ->onQueue('low');
+        app(OnejavService::class)->daily();
 
         return 0;
     }
