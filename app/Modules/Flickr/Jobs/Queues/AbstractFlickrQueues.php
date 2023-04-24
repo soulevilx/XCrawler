@@ -15,7 +15,7 @@ abstract class AbstractFlickrQueues implements ShouldQueue
 
     public FlickrService $service;
 
-    public function __construct(array $model)
+    public function __construct(public $model)
     {
         $this->service = app(FlickrService::class);
     }
