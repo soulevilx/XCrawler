@@ -10,8 +10,8 @@ class Favorites extends AbstractFlickrQueues
 
     public function process(): bool
     {
-        $this->service->favorites()->getList(['user_id' => '22213833@N02']);
-dd('dsd');
+        $this->service->favorites()->getList(['user_id' => $this->model->payload['nsid']]);
+
         return true;
     }
 }
