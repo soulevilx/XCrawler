@@ -46,8 +46,8 @@ class PoolService
     public function getPoolItems(string $job, int $limit = null): Collection
     {
         $items = app(PoolRepository::class)->getItems($job, $limit ?? config('core.pool.limit', 5));
-//        Pool::whereIn('_id', $items->pluck('id')->toArray())
-//            ->update(['state_code' => self::STATE_CODE_PROCESSING]);
+        Pool::whereIn('_id', $items->pluck('id')->toArray())
+            ->update(['state_code' => self::STATE_CODE_PROCESSING]);
 
         return $items;
     }
