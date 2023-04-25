@@ -5,6 +5,7 @@ namespace App\Modules\Flickr\Jobs;
 use App\Modules\Core\Jobs\AbstractApiQueue;
 use App\Modules\Core\OAuth\OAuth1\Providers\Flickr;
 use App\Modules\Core\OAuth\ProviderFactory;
+use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
 use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Support\Facades\Event;
@@ -55,7 +56,7 @@ class GetList extends AbstractApiQueue
                 $this->listEntities,
                 $this->listEntity,
                 [...$this->params, 'page' => $nextPage]
-            );
+            )->onQueue(PoolService::QUEUE_API);
         }
     }
 }

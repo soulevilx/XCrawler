@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Services\Adapters\Traits;
 
+use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Jobs\GetList;
 
 trait HasList
@@ -19,6 +20,6 @@ trait HasList
             self::LIST_ENTITIES,
             self::LIST_ENTITY,
             [...$this->listFilter, ...$filter]
-        );
+        )->onQueue(PoolService::QUEUE_API);
     }
 }

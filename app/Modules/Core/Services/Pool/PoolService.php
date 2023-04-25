@@ -25,10 +25,11 @@ class PoolService
     public function add(string $job, array $payload = [], ?string $queue = null): Pool
     {
         $pool = Pool::firstOrCreate([
-            'queue' => $queue ?? self::QUEUE_LOW,
             'state_code' => self::STATE_CODE_INIT,
             'job' => $job,
             'payload' => $payload,
+        ], [
+            'queue' => $queue ?? self::QUEUE_LOW,
         ]);
 
         Event::dispatch(new PoolItemAdded($pool));

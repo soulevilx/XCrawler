@@ -202,7 +202,7 @@ return [
             'tries' => 10,
             'timeout' => 3600,
             'nice' => 0,
-            'minProcesses' => 1,
+            'minProcesses' => 5,
         ],
     ],
 
