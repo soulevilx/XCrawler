@@ -3,20 +3,16 @@
 namespace App\Modules\Flickr\Jobs\Queues;
 
 use App\Modules\Core\Facades\Pool;
+use App\Modules\Core\Jobs\AbstractApiQueue;
 use App\Modules\Flickr\Services\FlickrService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
 
-abstract class AbstractFlickrQueues implements ShouldQueue
+abstract class AbstractFlickrQueues extends AbstractApiQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
-
     public FlickrService $service;
 
     public function __construct(public $model)
     {
+        parent::__construct();
         $this->service = app(FlickrService::class);
     }
 

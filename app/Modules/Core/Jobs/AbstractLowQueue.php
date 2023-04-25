@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 
-class AbstractLowQueue implements ShouldQueue
+abstract class AbstractLowQueue implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
     use HasLimitted;
