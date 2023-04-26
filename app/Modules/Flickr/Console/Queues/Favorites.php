@@ -16,7 +16,7 @@ class Favorites extends AbstractQueueCommand
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Get favorites photos from Flickr';
 
     protected function getJob(): string
     {

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Jav\Console\Onejav;
 
+use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Jav\Jobs\Onejav\OnejavAll;
 use Illuminate\Console\Command;
 
@@ -29,7 +30,7 @@ class All extends Command
     public function handle()
     {
         OnejavAll::dispatch()
-            ->onQueue('low');
+            ->onQueue(PoolService::QUEUE_LOW);
 
         return 0;
     }

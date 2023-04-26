@@ -3,7 +3,6 @@
 namespace App\Modules\Core\Jobs;
 
 use App\Modules\Core\Jobs\Traits\HasLimitted;
-use App\Modules\Core\Services\Pool\PoolService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,8 +16,7 @@ abstract class AbstractApiQueue implements ShouldQueue
 
     protected int $allow = 5;
 
-    public function __construct()
+    public function __construct(public $item)
     {
-        $this->onQueue(PoolService::QUEUE_API);
     }
 }

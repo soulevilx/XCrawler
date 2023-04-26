@@ -24,13 +24,10 @@ class PoolService
 
     public function add(string $job, array $payload = [], ?string $queue = null): Pool
     {
-        $pool = Pool::firstOrCreate([
-            'state_code' => self::STATE_CODE_INIT,
-            'job' => $job,
-            'payload' => $payload,
-        ], [
-            'queue' => $queue ?? self::QUEUE_LOW,
-        ]);
+        $pool = Pool::firstOrCreate(
+            ['state_code' => self::STATE_CODE_INIT, 'job' => $job, ...$payload],
+            ['queue' => $queue ?? self::QUEUE_LOW]
+        );
 
         Event::dispatch(new PoolItemAdded($pool));
 
@@ -44,13 +41,24 @@ class PoolService
         Event::dispatch(new PoolItemRemoved($pool));
     }
 
-    public function getPoolItems(string $job, int $limit = null): Collection
+    public function getPoolItems(string $job, int $limit = null): array
     {
-        $items = app(PoolRepository::class)->getItems($job, $limit ?? config('core.pool.limit', 5));
-        Pool::whereIn('_id', $items->pluck('id')->toArray())
-            ->update(['state_code' => self::STATE_CODE_PROCESSING]);
+        $items = app(PoolRepository::class)
+            ->getItems(
+                $job,
+                self::STATE_CODE_INIT,
+                $limit ?? config('core.pool.limit', 5)
+            );
 
-        return $items;
+        Pool::whereIn('_id', $items->pluck('id')->toArray())
+            ->delete();
+
+        return $items->toArray();
+    }
+
+    public function processing(Pool $pool): void
+    {
+        $pool->update(['state_code' => self::STATE_CODE_PROCESSING]);
     }
 
     public function complete(Pool $pool): void

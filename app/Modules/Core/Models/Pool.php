@@ -13,8 +13,8 @@ class Pool extends Model
 
     protected $guarded = [];
 
-    public function scopeByService(Builder $builder, string $service)
+    public function scopeByJob(Builder $builder, string $job)
     {
-        return $builder->where(compact('service'));
+        return $builder->where(compact('job'));
     }
 }

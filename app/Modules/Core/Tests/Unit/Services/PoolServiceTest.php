@@ -23,39 +23,55 @@ class PoolServiceTest extends TestCase
     public function testAdd(): void
     {
         Event::fake(PoolItemAdded::class);
-        $this->service->add('test', ['payload']);
+
+        $this->service->add('test', ['nsid' => '123']);
 
         $this->assertDatabaseHas('pool', [
             'queue' => PoolService::QUEUE_LOW,
             'state_code' => PoolService::STATE_CODE_INIT,
             'job' => 'test',
-            'payload' => ['payload']
+            'nsid' => "123"
         ], 'mongodb');
 
         Event::assertDispatched(PoolItemAdded::class, function ($event) {
             return $event->pool->job === 'test'
-                && $event->pool->payload === ['payload']
+                && $event->pool->nsid === "123"
                 && $event->pool->queue === PoolService::QUEUE_LOW
                 && $event->pool->state_code === PoolService::STATE_CODE_INIT;
         });
     }
 
+    public function testAddWithoutDuplicate()
+    {
+        $this->service->add('test', ['test' => 'test'], PoolService::QUEUE_API);
+        $this->service->add('test', ['test' => 'test'], PoolService::QUEUE_API);
+
+        $this->assertDatabaseHas('pool', [
+            'job' => 'test',
+            'test' => 'test',
+            'queue' => PoolService::QUEUE_API,
+            'state_code' => PoolService::STATE_CODE_INIT,
+        ], 'mongodb');
+
+        $this->assertCount(1, $this->service->getPoolItems('test'));
+    }
+
     public function testPoolDeleted(): void
     {
         Event::fake(PoolItemRemoved::class);
-        $pool = $this->service->add('test', ['payload']);
-        $this->service->remove($pool);
+        $item = $this->service->add('test', ['nsid' => '123']);
+        $this->service->remove($item);
 
         $this->assertDatabaseMissing('pool', [
             'queue' => PoolService::QUEUE_LOW,
             'state_code' => PoolService::STATE_CODE_INIT,
             'job' => 'test',
-            'payload' => ['payload']
+            'nsid' => "123"
         ], 'mongodb');
 
         Event::assertDispatched(PoolItemRemoved::class, function ($event) {
             return $event->pool->job === 'test'
-                && $event->pool->payload === ['payload']
+                && $event->pool->nsid === "123"
                 && $event->pool->queue === PoolService::QUEUE_LOW
                 && $event->pool->state_code === PoolService::STATE_CODE_INIT;
         });
@@ -63,30 +79,33 @@ class PoolServiceTest extends TestCase
 
     public function testGetPoolItems(): void
     {
-        $pool = $this->service->add('test', ['payload']);
-
+        $this->service->add('test', ['nsid' => '123']);
         $items = $this->service->getPoolItems('test');
 
         $this->assertCount(1, $items);
-        $this->assertTrue($items->first()->is($pool));
+
+        $this->assertDatabaseMissing('pool', [
+            'job' => 'test',
+            'nsid' => "123",
+        ], 'mongodb');
     }
 
     public function testPoolItemCompleted()
     {
         Event::fake(PoolItemCompleted::class);
-        $pool = $this->service->add('test', ['payload']);
-        $this->service->complete($pool);
+        $item = $this->service->add('test', ['nsid' => '123']);
+        $this->service->complete($item);
 
         $this->assertDatabaseHas('pool', [
             'queue' => PoolService::QUEUE_LOW,
             'state_code' => PoolService::STATE_CODE_COMPLETED,
             'job' => 'test',
-            'payload' => ['payload']
+            'nsid' => "123"
         ], 'mongodb');
 
         Event::assertDispatched(PoolItemCompleted::class, function ($event) {
             return $event->pool->job === 'test'
-                && $event->pool->payload === ['payload']
+                && $event->pool->nsid === "123"
                 && $event->pool->queue === PoolService::QUEUE_LOW
                 && $event->pool->state_code === PoolService::STATE_CODE_COMPLETED;
         });

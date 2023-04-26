@@ -3,7 +3,7 @@
 namespace App\Modules\Core\Repositories;
 
 use App\Modules\Core\Models\Pool;
-use App\Modules\Core\Services\Pool\PoolService;
+use Illuminate\Database\Eloquent\Collection;
 
 class PoolRepository
 {
@@ -12,11 +12,14 @@ class PoolRepository
     ) {
     }
 
-    public function getItems(string $job, int $limit)
-    {
+    public function getItems(
+        string $job,
+        string $stateCode,
+        int $limit
+    ): Collection {
         return $this->queue
-            ->where('job', $job)
-            ->where('state_code', PoolService::STATE_CODE_INIT)
+            ->byJob($job)
+            ->where('state_code', $stateCode)
             ->limit($limit)
             ->get();
     }
