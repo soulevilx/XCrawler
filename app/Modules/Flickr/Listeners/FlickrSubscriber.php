@@ -13,11 +13,41 @@ class FlickrSubscriber
 {
     public function fetchedFlickrItems(FetchedFlickrItems $event): void
     {
+        $items = collect($event->data[$event->listEntities][$event->listEntity]);
+
+        switch ($event->listEntities) {
+            case Contacts::LIST_ENTITIES:
+                $existsContacts = Contact::whereIn('nsid', $items->pluck('nsid'))->pluck('nsid')->toArray();
+                $items = $items->filter(
+                    fn($item) => !in_array($item['nsid'], $existsContacts)
+                )->values()->all();
+                if (!empty($items)) {
+                    Contact::insert($items);
+                }
+
+                break;
+            case People::LIST_ENTITIES:
+                $items = $items->groupBy('owner');
+                foreach ($items as $owner => $photos) {
+                    $existsPhotos = Photo::where('owner', $owner)
+                        ->whereIn('id', $photos->pluck('id')->toArray())
+                        ->pluck('id')->toArray();
+                    $items = $photos->filter(
+                        fn($item) => !in_array($item['id'], $existsPhotos)
+                    )->values()->all();
+
+                    if (!empty($items)) {
+                        Photo::insert($items);
+                    }
+                }
+                break;
+        }
+
+        /**
+         * @TODO Bulk insert
+         */
         foreach ($event->data[$event->listEntities][$event->listEntity] as $item) {
             switch ($event->listEntities) {
-                case  Contacts::LIST_ENTITIES:
-                    Contact::updateOrCreate(['nsid' => $item['nsid']], $item);
-                    break;
                 case People::LIST_ENTITIES:
                     Photo::updateOrCreate(
                         [
