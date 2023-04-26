@@ -29,7 +29,7 @@ abstract class AbstractQueueCommand extends Command implements Isolatable
         $queues = Pool::getPoolItems($this->getJob(), config('flickr.pool.limit'));
 
         foreach ($queues as $queue) {
-            $queue->job::dispatch($queue);
+            $queue->job::dispatch($queue)->onQueue($queue->queue);
         }
 
         return 0;
