@@ -29,7 +29,7 @@ class PhotoObserver
         }
 
         // If favorites queues of this owner doesn't exist, create it
-        if (!Pool::where('payload.nsid', $model->owner)->where('job', Favorites::class)->exists()) {
+        if (!Pool::where('nsid', $model->owner)->where('job', Favorites::class)->exists()) {
             // Get user' favorites
             PoolFacade::add(
                 Favorites::class,

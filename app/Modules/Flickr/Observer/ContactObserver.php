@@ -3,7 +3,6 @@
 namespace App\Modules\Flickr\Observer;
 
 use App\Modules\Core\Facades\Pool as PoolFacade;
-
 use App\Modules\Core\Models\Pool;
 use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Jobs\Queues\Photos;
@@ -14,7 +13,7 @@ class ContactObserver
     public function created(Contact $model)
     {
         // Get user's photos
-        if (!Pool::where('payload.nsid', $model->nsid)->where('job', Photos::class)->exists()) {
+        if (!Pool::where('nsid', $model->nsid)->where('job', Photos::class)->exists()) {
             PoolFacade::add(
                 Photos::class,
                 [

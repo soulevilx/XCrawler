@@ -53,6 +53,9 @@ class PoolService
                 $limit ?? config('core.pool.limit', 5)
             );
 
+        /**
+         * Delete instead update because performance would happen
+         */
         Pool::whereIn('_id', $items->pluck('id')->toArray())
             ->delete();
 
