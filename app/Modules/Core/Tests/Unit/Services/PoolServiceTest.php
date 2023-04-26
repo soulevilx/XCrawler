@@ -84,9 +84,10 @@ class PoolServiceTest extends TestCase
 
         $this->assertCount(1, $items);
 
-        $this->assertDatabaseMissing('pool', [
+        $this->assertDatabaseHas('pool', [
             'job' => 'test',
             'nsid' => "123",
+            'state_code' => PoolService::STATE_CODE_PROCESSING,
         ], 'mongodb');
     }
 

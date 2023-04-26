@@ -11,13 +11,13 @@ class Owner extends AbstractFlickrQueues
         /**
          * If contact already exists, skip
          */
-        if (Contact::where('nsid', $this->item['nsid'])->exists()) {
+        if (Contact::where('nsid', $this->item->nsid)->exists()) {
             return true;
         }
 
         $owner = $this->service
             ->people()
-            ->getInfo($this->item['nsid']);
+            ->getInfo($this->item->nsid);
 
         Contact::updateOrCreate([
             'nsid' => $owner['nsid'],

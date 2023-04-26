@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -30,5 +31,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->artisan('db:wipe');
         $this->artisan('migrate:fresh');
+
+        Cache::store('redis')->flush();
     }
 }

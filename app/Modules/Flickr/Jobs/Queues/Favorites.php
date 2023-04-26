@@ -12,7 +12,7 @@ class Favorites extends AbstractFlickrQueues
     {
         $this->service
             ->favorites()
-            ->getList(['user_id' => $this->item['nsid']]);
+            ->getList(['user_id' => $this->item->nsid]);
 
         return true;
     }

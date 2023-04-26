@@ -17,6 +17,7 @@ return [
         'callback' => env('FLICKR_CALLBACK'),
     ],
     'pool' => [
-        'limit' => env('POOL_LIMIT', 5)
+        'limit' => env('POOL_LIMIT', 5),
+        'ttl' => env('POOL_TTL', 60),
     ]
 ];

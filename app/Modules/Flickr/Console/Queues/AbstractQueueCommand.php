@@ -28,13 +28,8 @@ abstract class AbstractQueueCommand extends Command implements Isolatable
     {
         $queues = Pool::getPoolItems($this->getJob(), config('flickr.pool.limit'));
 
-        /**
-         * Model actually already deleted from database after pulled out from pool
-         * - Only array provided here for processing
-         * It would be issued when queue passed to job but failed. We have no way recover it
-         */
         foreach ($queues as $queue) {
-            $queue['job']::dispatch($queue);
+            $queue->job::dispatch($queue);
         }
 
         return 0;

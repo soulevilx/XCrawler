@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Jobs\Queues;
 
+use App\Modules\Core\Facades\Pool;
 use App\Modules\Core\Jobs\AbstractApiQueue;
 use App\Modules\Flickr\Services\FlickrService;
 
@@ -17,7 +18,9 @@ abstract class AbstractFlickrQueues extends AbstractApiQueue
             return 0;
         }
 
-        $this->process();
+        if ($this->process()) {
+            Pool::complete($this->item);
+        }
 
         return 0;
     }

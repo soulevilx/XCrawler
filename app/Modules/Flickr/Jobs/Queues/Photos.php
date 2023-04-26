@@ -8,7 +8,7 @@ class Photos extends AbstractFlickrQueues
     {
         $this->service
             ->people()
-            ->getList(['user_id' => $this->item['nsid']]);
+            ->getList(['user_id' => $this->item->nsid]);
 
         return true;
     }
