@@ -7,9 +7,12 @@ use App\Modules\Core\Events\PoolItemCompleted;
 use App\Modules\Core\Events\PoolItemRemoved;
 use App\Modules\Core\Models\Pool;
 use App\Modules\Core\Repositories\PoolRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Event;
 
+/**
+ * Because performance issue we won't store payload as array. Instead of it
+ * - Each payload item will be present as each column
+ */
 class PoolService
 {
     public const QUEUE_LOW = 'low';
