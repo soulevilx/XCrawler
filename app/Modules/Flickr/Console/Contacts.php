@@ -19,7 +19,7 @@ class Contacts extends Command
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Fetch contacts.';
 
     /**
      * Execute the console command.

@@ -39,19 +39,9 @@ class PhotoObserver
             });
         }
 
-        // If favorites queues of this owner doesn't exist, create it
-        if (!Pool::where('nsid', $model->owner)->where('job', Favorites::class)->exists()) {
-            // Get user' favorites
-            PoolFacade::add(
-                Favorites::class,
-                [
-                    'nsid' => $model->owner,
-                ],
-                PoolService::QUEUE_API
-            );
-        }
-
-        // Get sizes
+        /**
+         * Consider fetch sizes at this time or not
+         */
     }
 
     public function updated(Photo $model)

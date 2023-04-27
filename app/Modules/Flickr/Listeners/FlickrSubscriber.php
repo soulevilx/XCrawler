@@ -21,8 +21,9 @@ class FlickrSubscriber
                 $items = $items->filter(
                     fn($item) => !in_array($item['nsid'], $existsContacts)
                 )->values()->all();
-                if (!empty($items)) {
-                    Contact::insert($items);
+
+                foreach ($items as $item) {
+                    Contact::create($item);
                 }
 
                 break;
@@ -36,29 +37,13 @@ class FlickrSubscriber
                         fn($item) => !in_array($item['id'], $existsPhotos)
                     )->values()->all();
 
-                    if (!empty($items)) {
-                        Photo::insert($items);
+                    foreach ($items as $item) {
+                        Photo::create($item);
                     }
                 }
                 break;
         }
 
-        /**
-         * @TODO Bulk insert
-         */
-        foreach ($event->data[$event->listEntities][$event->listEntity] as $item) {
-            switch ($event->listEntities) {
-                case People::LIST_ENTITIES:
-                    Photo::updateOrCreate(
-                        [
-                            'id' => $item['id'],
-                            'owner' => $item['owner'],
-                        ],
-                        $item
-                    );
-                    break;
-            }
-        }
     }
 
     public function subscribe(Dispatcher $events): void

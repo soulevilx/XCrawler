@@ -12,7 +12,10 @@ class ContactObserver
 {
     public function created(Contact $model)
     {
-        // Get user's photos
+        /**
+         * Get user's photos
+         * flickr.people.getPhotos
+         */
         if (!Pool::where('nsid', $model->nsid)->where('job', Photos::class)->exists()) {
             PoolFacade::add(
                 Photos::class,
