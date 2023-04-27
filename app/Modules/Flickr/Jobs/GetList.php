@@ -41,7 +41,9 @@ class GetList extends AbstractApiQueue
             return;
         }
 
-        Event::dispatch(new FetchedFlickrItems($data, $this->listEntities, $this->listEntity));
+        Event::dispatch(
+            new FetchedFlickrItems($data, $this->listEntities, $this->listEntity, $this->params)
+        );
 
         $page = (int) $data[$this->listEntities]['page'];
         $pages = (int) $data[$this->listEntities]['pages'];

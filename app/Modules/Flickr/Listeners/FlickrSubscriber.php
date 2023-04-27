@@ -5,8 +5,10 @@ namespace App\Modules\Flickr\Listeners;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
 use App\Modules\Flickr\Models\Contact;
 use App\Modules\Flickr\Models\Photo;
+use App\Modules\Flickr\Models\Photoset;
 use App\Modules\Flickr\Services\Adapters\Contacts;
 use App\Modules\Flickr\Services\Adapters\People;
+use App\Modules\Flickr\Services\Adapters\PhotoSets;
 use Illuminate\Events\Dispatcher;
 
 class FlickrSubscriber
@@ -42,6 +44,22 @@ class FlickrSubscriber
                         Photo::create($item);
                     }
                 }
+                break;
+            case PhotoSets::LIST_ENTITIES:
+                if ($event->listEntity === PhotoSets::LIST_ENTITY) {
+
+                    $existsPhotosets = Photoset::whereIn('id', $items->pluck('id'))
+                        ->where('owner', $event->params['user_id'])
+                        ->pluck('id')->toArray();
+                    $items = $items->filter(
+                        fn($item) => !in_array($item['id'], $existsPhotosets)
+                    )->values()->all();
+
+                    foreach ($items as $item) {
+                        Photoset::create($item);
+                    }
+                }
+
                 break;
         }
     }

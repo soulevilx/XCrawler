@@ -9,8 +9,12 @@ class FetchedFlickrItems
      *
      * @return void
      */
-    public function __construct(public array $data, public string $listEntities, public string $listEntity)
-    {
+    public function __construct(
+        public array $data,
+        public string $listEntities,
+        public string $listEntity,
+        public array $params = []
+    ) {
         //
     }
 }
