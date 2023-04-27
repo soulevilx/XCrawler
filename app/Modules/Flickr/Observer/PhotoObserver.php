@@ -3,10 +3,8 @@
 namespace App\Modules\Flickr\Observer;
 
 use App\Modules\Core\Facades\Pool as PoolFacade;
-use App\Modules\Core\Models\Pool;
 use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Events\FoundNewContact;
-use App\Modules\Flickr\Jobs\Queues\Favorites;
 use App\Modules\Flickr\Jobs\Queues\Owner;
 use App\Modules\Flickr\Models\Contact;
 use App\Modules\Flickr\Models\Photo;

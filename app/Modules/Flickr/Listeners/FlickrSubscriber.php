@@ -29,6 +29,7 @@ class FlickrSubscriber
                 break;
             case People::LIST_ENTITIES:
                 $items = $items->groupBy('owner');
+
                 foreach ($items as $owner => $photos) {
                     $existsPhotos = Photo::where('owner', $owner)
                         ->whereIn('id', $photos->pluck('id')->toArray())
@@ -43,7 +44,6 @@ class FlickrSubscriber
                 }
                 break;
         }
-
     }
 
     public function subscribe(Dispatcher $events): void
