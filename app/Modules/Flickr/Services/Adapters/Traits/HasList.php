@@ -13,6 +13,13 @@ trait HasList
 
     protected array $list = [];
 
+    public function setFilter(string $key, string $value): self
+    {
+        $this->listFilter[$key] = $value;
+
+        return $this;
+    }
+
     public function getList(array $filter = []): void
     {
         GetList::dispatch(

@@ -12,8 +12,4 @@ abstract class AbstractApiQueue implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
 
     protected int $allow = 5;
-
-    public function __construct(public $item)
-    {
-    }
 }

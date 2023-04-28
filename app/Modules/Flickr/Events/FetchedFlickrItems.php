@@ -15,6 +15,5 @@ class FetchedFlickrItems
         public string $listEntity,
         public array $params = []
     ) {
-        //
     }
 }

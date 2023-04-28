@@ -2,8 +2,7 @@
 
 namespace App\Modules\Flickr\Console;
 
-use App\Modules\Core\Services\Pool\PoolService;
-use App\Modules\Flickr\Jobs\Photos as PhotosJob;
+use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Console\Command;
 
 class Photos extends Command
@@ -24,6 +23,10 @@ class Photos extends Command
      */
     public function handle()
     {
-        PhotosJob::dispatch($this->argument('nsid'))->onQueue(PoolService::QUEUE_API);
+        app(FlickrService::class)
+            ->people()
+            ->getList(['user_id' => $this->argument('nsid')]);
+
+        return 0;
     }
 }

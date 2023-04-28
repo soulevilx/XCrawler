@@ -4,13 +4,13 @@ namespace App\Modules\Flickr\Tests\Feature\Console;
 
 use App\Modules\Flickr\Tests\TestCase;
 
-class PhotosTest extends TestCase
+class PhotosetsTest extends TestCase
 {
     public function testPhotos()
     {
-        $this->artisan('flickr:photos 123')
+        $this->artisan('flickr:photosets 123')
             ->assertExitCode(0);
 
-        $this->assertDatabaseCount('flickr_photos', 358, 'mongodb');
+        $this->assertDatabaseCount('flickr_photosets', 23, 'mongodb');
     }
 }

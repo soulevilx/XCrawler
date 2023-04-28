@@ -192,6 +192,18 @@ return [
             'nice' => 0,
             'minProcesses' => 10,
         ],
+        'low' => [
+            'connection' => 'redis',
+            'queue' => ['low'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 10,
+            'memory' => 2048,
+            'tries' => 10,
+            'timeout' => 3600,
+            'nice' => 0,
+            'minProcesses' => 10,
+        ],
         'api' => [
             'connection' => 'redis',
             'queue' => ['api'],
@@ -210,12 +222,16 @@ return [
         'production' => [
             'default' => [
             ],
+            'low' => [
+            ],
             'api' => [
             ],
         ],
 
         'local' => [
             'default' => [
+            ],
+            'low' => [
             ],
             'api' => [
             ],

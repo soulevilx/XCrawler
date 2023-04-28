@@ -28,6 +28,7 @@ class Contacts extends Command
      */
     public function handle()
     {
+
         app(FlickrService::class)->contacts()->getList();
     }
 }

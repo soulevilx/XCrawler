@@ -2,8 +2,7 @@
 
 namespace App\Modules\Flickr\Console;
 
-use App\Modules\Core\Services\Pool\PoolService;
-use App\Modules\Flickr\Jobs\Favorites as FavoritesJob;
+use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Console\Command;
 
 class Favorites extends Command
@@ -24,6 +23,6 @@ class Favorites extends Command
      */
     public function handle()
     {
-        FavoritesJob::dispatch($this->argument('nsid'))->onQueue(PoolService::QUEUE_API);
+        app(FlickrService::class)->favorites()->getList(['user_id' => $this->argument('nsid')]);
     }
 }

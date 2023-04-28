@@ -4,6 +4,7 @@ namespace App\Modules\Flickr\Models;
 
 use Jenssegers\Mongodb\Eloquent\Builder;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Relations\BelongsToMany;
 
 class Photo extends Model
 {
@@ -16,5 +17,10 @@ class Photo extends Model
     public function scopeByNsid(Builder $builder, string $nsid)
     {
         return $builder->where(compact('nsid'));
+    }
+
+    public function photosets(): BelongsToMany
+    {
+        return $this->belongsToMany(Photoset::class, 'photo_photosets', 'photo_id', 'photoset_id');
     }
 }

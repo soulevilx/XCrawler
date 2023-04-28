@@ -10,6 +10,10 @@ abstract class AbstractFlickrQueues extends AbstractApiQueue
 {
     public FlickrService $service;
 
+    public function __construct(public $item)
+    {
+    }
+
     public function handle(): int
     {
         $this->service = app(FlickrService::class);

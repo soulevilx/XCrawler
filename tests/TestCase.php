@@ -25,13 +25,15 @@ abstract class TestCase extends BaseTestCase
 
     public function refreshDatabase()
     {
-        if (App::environment('testing')) {
-            Setting::truncate();
-            RequestLog::truncate();
-            Pool::truncate();
-            Contact::truncate();
-            Photo::truncate();
+        if (!App::environment('testing')) {
+            return;
         }
+
+        Setting::truncate();
+        RequestLog::truncate();
+        Pool::truncate();
+        Contact::truncate();
+        Photo::truncate();
 
         $this->artisan('db:wipe');
         $this->artisan('migrate:fresh');
