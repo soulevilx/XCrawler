@@ -190,7 +190,7 @@ return [
             'tries' => 10,
             'timeout' => 3600,
             'nice' => 0,
-            'minProcesses' => 5,
+            'minProcesses' => 10,
         ],
         'api' => [
             'connection' => 'redis',
