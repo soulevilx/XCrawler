@@ -35,11 +35,6 @@ class FlickrSubscriber
 
     public function createdBulkOfPhotosets(CreatedBulkOfPhotosets $event): void
     {
-        $owner = collect($event->photosets)->groupBy('owner')->keys();
-
-        $downloads = Download::whereIn('nsid', $owner->toArray())->where(['state_code' => Download::STATE_CODE_PENDING])->get();
-
-        dd($downloads);
     }
 
     public function subscribe(Dispatcher $events): void
