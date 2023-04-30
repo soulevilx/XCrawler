@@ -6,6 +6,7 @@ use App\Modules\Core\Facades\Pool;
 use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Events\CreatedBulkOfContacts;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
+use App\Modules\Flickr\Jobs\Queues\Owner;
 use App\Modules\Flickr\Jobs\Queues\Photos;
 use App\Modules\Flickr\Jobs\Queues\Photosets;
 use App\Modules\Flickr\Models\Contact;
@@ -61,7 +62,7 @@ class FetchFlickrItemsTest extends TestCase
 
     public function testWithPhotos()
     {
-        $nsid= '124284292@N03';
+        $nsid = '124284292@N03';
 
         $photos = json_decode(
             file_get_contents(__DIR__.'/../../Fixtures/flickr_favorites_1.json'),
@@ -81,14 +82,18 @@ class FetchFlickrItemsTest extends TestCase
 
         $this->assertEquals(
             $countPhotosByOwner,
-            Photo::where('owner', '124284292@N03')->count()
+            Photo::where('owner', $nsid)->count()
         );
 
         Event::dispatch(
             new FetchedFlickrItems($photos, 'photos', 'photo')
         );
 
-        $this->assertEquals($countPhotosByOwner, Photo::where('owner', '124284292@N03')->count());
+        $this->assertEquals($countPhotosByOwner, Photo::where('owner', $nsid)->count());
+        /**
+         * We need fetch this owner only 1 time
+         */
+        $this->assertEquals(collect($photos['photos']['photo'])->groupBy('owner')->keys()->count(), \App\Modules\Core\Models\Pool::where('job', Owner::class)->count());
         $this->assertDatabaseCount('flickr_photos', count($photos['photos']['photo']), 'mongodb');
     }
 

@@ -35,23 +35,36 @@ class PhotosRepository
             }
         }
 
-        $existsContacts = app(ContactsRepository::class)->getContactsByNsids($owners->toArray())->pluck('nsid')->toArray();
+        /**
+         * Register owners in pool
+         */
 
+        $existsContacts = app(ContactsRepository::class)->getContactsByNsids($owners->toArray())->pluck('nsid')->toArray();
         $notExistsContacts = $owners->filter(
             fn($item) => !in_array($item, $existsContacts)
-        )->values()->map(function ($item) {
+        )->toArray();
+
+        if (empty($notExistsContacts)) {
+            return;
+        }
+
+        $registeredPoolItems = Pool::where('job', Owner::class)
+            ->whereIn('nsid', $notExistsContacts)->pluck('nsid')->toArray();
+
+        $notExistsContactsInPool = collect(array_diff($notExistsContacts, $registeredPoolItems));
+        $notExistsContactsInPool = $notExistsContactsInPool->map(function ($item) {
             return [
                 'nsid' => $item,
                 'state_code' => PoolService::STATE_CODE_INIT,
                 'job' => Owner::class,
                 'queue' => PoolService::QUEUE_API
             ];
-        })->toArray();
+        })->values()->toArray();
 
-        if (empty($notExistsContacts)) {
+        if (empty($notExistsContactsInPool)) {
             return;
         }
 
-        Pool::insert($notExistsContacts);
+        Pool::insert($notExistsContactsInPool);
     }
 }

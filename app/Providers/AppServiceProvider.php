@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        try {
+            $redis = Redis::connection();
+            $redis->ping();
+        } catch (\Exception $e) {
+            throw new \Exception('Redis is not available');
+        }
     }
 }

@@ -18,11 +18,6 @@ class FavoritesTest extends TestCase
          * Invalid number because of json
          */
         $this->assertDatabaseCount('flickr_photos', 1512, 'mongodb');
-        $this->assertDatabaseCount(
-            'pool',
-            Pool::where('job', Owner::class)
-                ->where('state_code', PoolService::STATE_CODE_INIT)->count(),
-            'mongodb'
-        );
+
     }
 }
