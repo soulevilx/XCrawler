@@ -23,6 +23,8 @@ class Favorites extends Command
      */
     public function handle()
     {
-        app(FlickrService::class)->favorites()->getList(['user_id' => $this->argument('nsid')]);
+        app(FlickrService::class)
+            ->favorites()
+            ->getList(['user_id' => $this->argument('nsid')]);
     }
 }

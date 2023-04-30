@@ -2,13 +2,14 @@
 
 namespace App\Modules\Flickr\Listeners;
 
-use App\Modules\Core\Models\Download;
 use App\Modules\Flickr\Events\CreatedBulkOfPhotosets;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
 use App\Modules\Flickr\Services\Adapters\Contacts;
 use App\Modules\Flickr\Services\Adapters\People;
 use App\Modules\Flickr\Services\Adapters\PhotoSets;
-use App\Modules\Flickr\Services\FlickrService;
+use App\Modules\Flickr\Services\ContactsService;
+use App\Modules\Flickr\Services\PhotosetsService;
+use App\Modules\Flickr\Services\PhotosService;
 use Illuminate\Events\Dispatcher;
 
 class FlickrSubscriber
@@ -19,15 +20,19 @@ class FlickrSubscriber
 
         switch ($event->listEntities) {
             case Contacts::LIST_ENTITIES:
-                app(FlickrService::class)->contacts()->createMany($items);
+                app(ContactsService::class)->insertBulk($items);
 
                 break;
             case People::LIST_ENTITIES:
-                app(FlickrService::class)->people()->createMany($items);
+                app(PhotosService::class)->insertBulk($items);
 
                 break;
             case PhotoSets::LIST_ENTITIES:
-                app(FlickrService::class)->photosets()->createMany($items);
+                app(PhotosetsService::class)->insertPhotosetsBulk($items);
+
+                break;
+            case PhotoSets::LIST_ENTITY:
+                app(PhotosetsService::class)->createPhotosBulk($event->data);
 
                 break;
         }

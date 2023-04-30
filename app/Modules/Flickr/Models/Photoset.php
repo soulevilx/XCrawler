@@ -15,6 +15,11 @@ class Photoset extends Model
 
     public function photos(): BelongsToMany
     {
-        return $this->belongsToMany(Photo::class, 'photo_photosets', 'photoset_id', 'photo_id');
+        return $this->belongsToMany(
+            Photo::class,
+            'photo_photosets',
+            'photoset_ids',
+            'photo_ids'
+        );
     }
 }

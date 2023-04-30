@@ -5,6 +5,9 @@ namespace App\Modules\Flickr\Console;
 use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Console\Command;
 
+/**
+ * Entry point Flickr processes
+ */
 class Contacts extends Command
 {
     /**
@@ -28,7 +31,6 @@ class Contacts extends Command
      */
     public function handle()
     {
-
         app(FlickrService::class)->contacts()->getList();
     }
 }
