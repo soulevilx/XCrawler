@@ -2,10 +2,11 @@
 
 namespace App\Modules\Core\Models;
 
+use App\Modules\Core\Models\Interfaces\BaseModelInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class RequestLog extends Model
+class RequestLog extends Model implements BaseModelInterface
 {
     use HasFactory;
 

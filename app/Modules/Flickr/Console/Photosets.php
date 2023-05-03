@@ -2,8 +2,6 @@
 
 namespace App\Modules\Flickr\Console;
 
-use App\Modules\Core\Services\Pool\PoolService;
-use App\Modules\Flickr\Jobs\Photosets as PhotosetsJob;
 use App\Modules\Flickr\Services\FlickrService;
 use Illuminate\Console\Command;
 
@@ -16,7 +14,7 @@ class Photosets extends Command
      *
      * @var string
      */
-    protected $description = 'Fetch user\' photos .';
+    protected $description = 'Fetch user\' photosets.';
 
     /**
      * Execute the console command.

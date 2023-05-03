@@ -8,10 +8,7 @@ class Owner extends AbstractFlickrQueues
 {
     public function process(): bool
     {
-        /**
-         * If contact already exists, skip
-         */
-        if (Contact::where('nsid', $this->item->nsid)->exists()) {
+        if (!$contact = Contact::byNsid($this->item->nsid)->first()) {
             return true;
         }
 
@@ -19,9 +16,14 @@ class Owner extends AbstractFlickrQueues
             ->people()
             ->getInfo($this->item->nsid);
 
-        Contact::updateOrCreate([
-            'nsid' => $owner['nsid'],
-        ], $owner);
+        $data = [
+            'ispro' => $owner['ispro'],
+            'is_deleted' => $owner['is_deleted'],
+        ];
+        unset($owner['ispro'], $owner['is_deleted']);
+        $data['details'] = $owner;
+
+        $contact->update($data);
 
         return true;
     }

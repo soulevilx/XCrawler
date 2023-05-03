@@ -2,25 +2,60 @@
 
 namespace App\Modules\Flickr\Models;
 
-use Jenssegers\Mongodb\Eloquent\Builder;
-use Jenssegers\Mongodb\Eloquent\Model;
-use Jenssegers\Mongodb\Relations\BelongsToMany;
+use App\Modules\Core\Models\Interfaces\BaseModelInterface;
+use App\Modules\Core\Models\Traits\HasUuid;
+use App\Modules\Flickr\Database\Factories\PhotoFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Photo extends Model
+class Photo extends Model implements BaseModelInterface
 {
-    protected $connection = 'mongodb';
+    use HasFactory;
+    use HasUuid;
 
-    protected $collection = 'flickr_photos';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
 
-    protected $guarded = [];
+    protected $table = 'flickr_photos';
+    protected $fillable = [
+        'uuid',
+        'id',
+        'owner',
+        'secret',
+        'server',
+        'farm',
+        'title',
+        'ispublic',
+        'isfriend',
+        'isfamily',
+    ];
 
-    public function scopeByNsid(Builder $builder, string $nsid)
+    protected $casts = [
+        'uuid' => 'string',
+        'id' => 'integer',
+        'owner' => 'string',
+        'secret' => 'string',
+        'server' => 'integer',
+        'farm' => 'integer',
+        'title' => 'string',
+        'ispublic' => 'boolean',
+        'isfriend' => 'boolean',
+        'isfamily' => 'boolean',
+    ];
+
+    protected static function newFactory()
     {
-        return $builder->where(compact('nsid'));
+        return PhotoFactory::new();
     }
 
-    public function photosets(): BelongsToMany
+    public function contact(): BelongsTo
     {
-        return $this->belongsToMany(Photoset::class, 'photo_photosets', 'photo_ids', 'photoset_ids');
+        return $this->belongsTo(Contact::class, 'owner', 'nsid');
+    }
+
+    public function photosets()
+    {
+        return $this->belongsToMany(Photoset::class, 'photo_photoset', 'photo_id', 'photoset_id');
     }
 }

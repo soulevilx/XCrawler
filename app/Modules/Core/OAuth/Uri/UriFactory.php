@@ -113,7 +113,7 @@ class UriFactory implements UriFactoryInterface
     {
         $host = $_server['HTTP_HOST'] ?? '';
 
-        if (strstr($host, ':')) {
+        if (str_contains($host, ':')) {
             $host = parse_url($host, PHP_URL_HOST);
         }
 

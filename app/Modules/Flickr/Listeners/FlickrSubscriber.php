@@ -2,14 +2,13 @@
 
 namespace App\Modules\Flickr\Listeners;
 
-use App\Modules\Flickr\Events\CreatedBulkOfPhotosets;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
 use App\Modules\Flickr\Services\Adapters\Contacts;
 use App\Modules\Flickr\Services\Adapters\People;
 use App\Modules\Flickr\Services\Adapters\PhotoSets;
-use App\Modules\Flickr\Services\ContactsService;
-use App\Modules\Flickr\Services\PhotosetsService;
-use App\Modules\Flickr\Services\PhotosService;
+use App\Modules\Flickr\Services\ContactService;
+use App\Modules\Flickr\Services\PhotoService;
+use App\Modules\Flickr\Services\PhotosetService;
 use Illuminate\Events\Dispatcher;
 
 class FlickrSubscriber
@@ -20,26 +19,22 @@ class FlickrSubscriber
 
         switch ($event->listEntities) {
             case Contacts::LIST_ENTITIES:
-                app(ContactsService::class)->insertBulk($items);
+                app(ContactService::class)->insert($items);
 
                 break;
             case People::LIST_ENTITIES:
-                app(PhotosService::class)->insertBulk($items);
+                app(PhotoService::class)->insert($items);
 
                 break;
             case PhotoSets::LIST_ENTITIES:
-                app(PhotosetsService::class)->insertPhotosetsBulk($items);
+                app(PhotosetService::class)->insert($items);
 
                 break;
             case PhotoSets::LIST_ENTITY:
-                app(PhotosetsService::class)->createPhotosBulk($event->data);
+                app(PhotosetService::class)->insertPhotos($event->data);
 
                 break;
         }
-    }
-
-    public function createdBulkOfPhotosets(CreatedBulkOfPhotosets $event): void
-    {
     }
 
     public function subscribe(Dispatcher $events): void
@@ -47,11 +42,6 @@ class FlickrSubscriber
         $events->listen(
             FetchedFlickrItems::class,
             [self::class, 'fetchedFlickrItems']
-        );
-
-        $events->listen(
-            CreatedBulkOfPhotosets::class,
-            [self::class, 'createdBulkOfPhotosets']
         );
     }
 }

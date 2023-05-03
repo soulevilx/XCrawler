@@ -2,10 +2,11 @@
 
 namespace App\Modules\Core\Models;
 
+use App\Modules\Core\Models\Interfaces\BaseModelInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class Setting extends Model
+class Setting extends Model implements BaseModelInterface
 {
     use HasFactory;
 

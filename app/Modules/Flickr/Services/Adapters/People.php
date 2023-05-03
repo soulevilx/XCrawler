@@ -2,10 +2,9 @@
 
 namespace App\Modules\Flickr\Services\Adapters;
 
-use App\Modules\Flickr\Repositories\PhotosRepository;
+use App\Modules\Flickr\Repositories\PhotoRepository;
 use App\Modules\Flickr\Services\Adapters\Interfaces\ListInterface;
 use App\Modules\Flickr\Services\Adapters\Traits\HasList;
-use Illuminate\Support\Collection;
 
 class People extends BaseAdapter implements ListInterface
 {
@@ -17,13 +16,13 @@ class People extends BaseAdapter implements ListInterface
     public const LIST_ENTITY = 'photo';
     public const LIST_ENTITIES = 'photos';
 
-    private PhotosRepository $repository;
+    private PhotoRepository $repository;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->repository = app(PhotosRepository::class);
+        $this->repository = app(PhotoRepository::class);
     }
 
     public function getInfo(string $nsid): array

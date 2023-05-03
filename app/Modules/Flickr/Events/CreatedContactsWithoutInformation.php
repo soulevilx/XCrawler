@@ -2,12 +2,10 @@
 
 namespace App\Modules\Flickr\Events;
 
-use App\Modules\Flickr\Models\Contact;
-
-class ContactCreated
+class CreatedContactsWithoutInformation
 {
     public function __construct(
-        public Contact $contact,
+        public array $nsids,
     ) {
     }
 }

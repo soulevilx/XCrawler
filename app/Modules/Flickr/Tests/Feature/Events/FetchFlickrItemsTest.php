@@ -5,8 +5,9 @@ namespace App\Modules\Flickr\Tests\Feature\Events;
 use App\Modules\Core\Facades\Pool;
 use App\Modules\Core\Services\Pool\PoolService;
 use App\Modules\Flickr\Events\CreatedBulkOfContacts;
+use App\Modules\Flickr\Events\CreatedBulkOfPhotosets;
+use App\Modules\Flickr\Events\CreatedContactsWithoutInformation;
 use App\Modules\Flickr\Events\FetchedFlickrItems;
-use App\Modules\Flickr\Jobs\Queues\Owner;
 use App\Modules\Flickr\Jobs\Queues\Photos;
 use App\Modules\Flickr\Jobs\Queues\Photosets;
 use App\Modules\Flickr\Models\Contact;
@@ -29,6 +30,9 @@ class FetchFlickrItemsTest extends TestCase
 
         Contact::create(compact('nsid'));
 
+        /**
+         * Photos pool for this contact
+         */
         Pool::add(
             Photos::class,
             compact('nsid'),
@@ -39,9 +43,9 @@ class FetchFlickrItemsTest extends TestCase
             new FetchedFlickrItems($contacts, 'contacts', 'contact')
         );
 
-        $this->assertDatabaseCount('flickr_contacts', 1000, 'mongodb');
+        $this->assertDatabaseCount('flickr_contacts', 1000);
         $this->assertEquals(
-            1000,
+            999,
             \App\Modules\Core\Models\Pool::where('job', Photos::class)->where(
                 'state_code',
                 PoolService::STATE_CODE_INIT
@@ -56,12 +60,13 @@ class FetchFlickrItemsTest extends TestCase
         );
 
         Event::assertDispatched(CreatedBulkOfContacts::class, static function ($event) {
-            return count($event->nsid) === 999;
+            return count($event->nsids) === 999;
         });
     }
 
     public function testWithPhotos()
     {
+        Event::fake([CreatedBulkOfContacts::class, CreatedContactsWithoutInformation::class]);
         $nsid = '124284292@N03';
 
         $photos = json_decode(
@@ -69,8 +74,8 @@ class FetchFlickrItemsTest extends TestCase
             true
         );
 
-        Photo::create([
-            'owner' => $nsid,
+        Photo::factory()->create([
+            'owner' => Contact::factory()->create(compact('nsid'))->nsid,
             'id' => '52608033816',
         ]);
 
@@ -90,15 +95,14 @@ class FetchFlickrItemsTest extends TestCase
         );
 
         $this->assertEquals($countPhotosByOwner, Photo::where('owner', $nsid)->count());
-        /**
-         * We need fetch this owner only 1 time
-         */
-        $this->assertEquals(collect($photos['photos']['photo'])->groupBy('owner')->keys()->count(), \App\Modules\Core\Models\Pool::where('job', Owner::class)->count());
-        $this->assertDatabaseCount('flickr_photos', count($photos['photos']['photo']), 'mongodb');
+        $this->assertDatabaseCount('flickr_photos', count($photos['photos']['photo']));
+        Event::assertDispatched(CreatedBulkOfContacts::class);
+        Event::assertDispatched(CreatedContactsWithoutInformation::class);
     }
 
     public function testWithPhotosets()
     {
+        Event::fake(CreatedBulkOfPhotosets::class);
         $photosẹts = json_decode(
             file_get_contents(__DIR__.'/../../Fixtures/flickr_photosets.json'),
             true
@@ -106,12 +110,12 @@ class FetchFlickrItemsTest extends TestCase
 
         $countPhotosets = collect($photosẹts['photosets']['photoset'])->count();
 
-
         Event::dispatch(
             new FetchedFlickrItems($photosẹts, 'photosets', 'photoset')
         );
 
         $this->assertEquals($countPhotosets, Photoset::count());
+         Event::assertDispatched(CreatedBulkOfPhotosets::class);
     }
 
     public function testWithPhotosetPhotos()

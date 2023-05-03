@@ -5,8 +5,6 @@ namespace Tests;
 use App\Modules\Core\Models\Pool;
 use App\Modules\Core\Models\RequestLog;
 use App\Modules\Core\Models\Setting;
-use App\Modules\Flickr\Models\Contact;
-use App\Modules\Flickr\Models\Photo;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -32,8 +30,6 @@ abstract class TestCase extends BaseTestCase
         Setting::truncate();
         RequestLog::truncate();
         Pool::truncate();
-        Contact::truncate();
-        Photo::truncate();
 
         $this->artisan('db:wipe');
         $this->artisan('migrate:fresh');

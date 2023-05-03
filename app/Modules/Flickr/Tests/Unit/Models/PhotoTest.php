@@ -2,6 +2,7 @@
 
 namespace App\Modules\Flickr\Tests\Unit\Models;
 
+use App\Modules\Flickr\Models\Contact;
 use App\Modules\Flickr\Models\Photo;
 use App\Modules\Flickr\Models\Photoset;
 use App\Modules\Flickr\Tests\TestCase;
@@ -10,13 +11,19 @@ class PhotoTest extends TestCase
 {
     public function testPhotosetsRelationship()
     {
-        $photo = Photo::create([
-            'id' => $this->faker->uuid,
-            'owner' => $this->faker->uuid,
+        $contact = Contact::factory()->create();
+        Photo::factory()->create([
+            'id' => $this->faker->randomNumber(),
+            'owner' => $contact->nsid,
+        ]);
+        $photo = Photo::factory()->create([
+            'id' => $this->faker->randomNumber(),
+            'owner' => $contact->nsid,
         ]);
 
         $photoset = Photoset::create([
-            'id' => $this->faker->uuid,
+            'id' => $this->faker->randomNumber(),
+            'owner' => $contact->nsid,
         ]);
 
         $photo->photosets()->attach($photoset);

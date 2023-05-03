@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\OAuth\OAuth1\Providers;
 
+use App\Modules\Core\Models\Integration;
 use App\Modules\Core\Models\OAuthLog;
 use App\Modules\Core\OAuth\OAuth1\Token\Token;
 use App\Modules\Core\OAuth\OAuth1\Token\TokenInterface;
@@ -123,6 +124,11 @@ class Flickr extends AbstractProvider
             $method
         );
 
+        Integration::where('service', 'flickr')
+            ->where('token', $this->storage->retrieveAccessToken('flickr')->getAccessToken())
+            ->where('token_secret', $this->storage->retrieveAccessToken('flickr')->getAccessTokenSecret())
+            ->first()->increment('requests');
+
         OAuthLog::create([
             'service' => $this->service(),
             'path' => $path,
@@ -133,11 +139,12 @@ class Flickr extends AbstractProvider
         return new FlickrResponse($response);
     }
 
-    public function requestRest($path, $body = null, array $extraHeaders = [], $method = 'POST', )
+    public function requestRest($path, $body = null, array $extraHeaders = [], $method = 'POST',)
     {
-        return $this->request($path, $body, $extraHeaders, $method);    }
+        return $this->request($path, $body, $extraHeaders, $method);
+    }
 
-    public function requestXmlrpc($path, $body = null, array $extraHeaders = [],$method = 'POST', )
+    public function requestXmlrpc($path, $body = null, array $extraHeaders = [], $method = 'POST',)
     {
         $this->format = 'xmlrpc';
 

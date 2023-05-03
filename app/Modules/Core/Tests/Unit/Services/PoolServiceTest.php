@@ -53,7 +53,7 @@ class PoolServiceTest extends TestCase
             'state_code' => PoolService::STATE_CODE_INIT,
         ], 'mongodb');
 
-        $this->assertCount(1, $this->service->getPoolItems('test'));
+        $this->assertCount(1, $this->service->getItems(['where' => ['job' => 'test']]));
     }
 
     public function testPoolDeleted(): void
@@ -80,7 +80,8 @@ class PoolServiceTest extends TestCase
     public function testGetPoolItems(): void
     {
         $this->service->add('test', ['nsid' => '123']);
-        $items = $this->service->getPoolItems('test');
+        $this->service->add('test2', ['nsid' => '123']);
+        $items = $this->service->getItems(['where' => ['job' => 'test' ]]);
 
         $this->assertCount(1, $items);
 
@@ -88,6 +89,11 @@ class PoolServiceTest extends TestCase
             'job' => 'test',
             'nsid' => "123",
             'state_code' => PoolService::STATE_CODE_PROCESSING,
+        ], 'mongodb');
+        $this->assertDatabaseHas('pool', [
+            'job' => 'test2',
+            'nsid' => "123",
+            'state_code' => PoolService::STATE_CODE_INIT,
         ], 'mongodb');
     }
 

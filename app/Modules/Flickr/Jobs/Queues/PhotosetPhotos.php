@@ -10,6 +10,6 @@ class PhotosetPhotos extends AbstractFlickrQueues
             ->photosets()
             ->getPhotos(['photoset_id' => $this->item->id]);
 
-        return 0;
+        return true;
     }
 }

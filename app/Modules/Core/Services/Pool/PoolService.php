@@ -27,6 +27,15 @@ class PoolService
     public const STATE_CODE_PROCESSING = 'PROCESSING';
     public const STATE_CODE_COMPLETED = 'COMPLETED';
 
+    public function __construct(private PoolRepository $repository)
+    {
+    }
+
+    public function insert(\Illuminate\Support\Collection $items): void
+    {
+        $this->repository->insert($items);
+    }
+
     public function add(string $job, array $payload = [], ?string $queue = null): Pool
     {
         $cache = Cache::store('redis');
@@ -54,16 +63,11 @@ class PoolService
         Event::dispatch(new PoolItemRemoved($pool));
     }
 
-    public function getPoolItems(string $job, int $limit = null): Collection
+    public function getItems(array|\Illuminate\Support\Collection $filter = []): Collection
     {
-        $items = app(PoolRepository::class)
-            ->getItems(
-                $job,
-                self::STATE_CODE_INIT,
-                $limit ?? config('core.pool.limit', 5)
-            );
+        $items = $this->repository->getItems($filter);
 
-        Pool::whereIn('_id', $items->pluck('id')->toArray())
+        Pool::whereIn('_id', $items->pluck('_id')->toArray())
             ->update(['state_code' => self::STATE_CODE_PROCESSING]);
 
         return $items;

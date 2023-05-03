@@ -6,9 +6,6 @@ use App\Modules\Core\Models\Download;
 use App\Modules\Core\Models\Integration;
 use App\Modules\Core\OAuth\OAuth1\Providers\Flickr;
 use App\Modules\Core\XClient\XClient;
-use App\Modules\Flickr\Models\Contact;
-use App\Modules\Flickr\Models\Photo;
-use App\Modules\Flickr\Models\Photoset;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\App;
 use Mockery;
@@ -22,9 +19,6 @@ class TestCase extends \Tests\TestCase
         parent::setUp();
 
         if (App::environment('testing')) {
-            Contact::truncate();
-            Photo::truncate();
-            Photoset::truncate();
             Download::truncate();
             Integration::truncate();
 
@@ -73,7 +67,7 @@ class TestCase extends \Tests\TestCase
                 $mock->shouldReceive('request')
                     ->withSomeOfArgs(
                         $this->getUri('flickr.people.getPhotos')->getAbsoluteUri(),
-                        ['per_page' => 500, 'user_id' => '123'],
+                        ['per_page' => 500, 'user_id' => '94529704@N02'],
                     )
                     ->andReturn(new Response(
                         200,
@@ -86,12 +80,38 @@ class TestCase extends \Tests\TestCase
                 $mock->shouldReceive('request')
                     ->withSomeOfArgs(
                         $this->getUri('flickr.photosets.getList')->getAbsoluteUri(),
-                        ['per_page' => 500, 'user_id' => '123'],
+                        ['per_page' => 500, 'user_id' => '94529704@N02'],
                     )
                     ->andReturn(new Response(
                         200,
                         [],
                         file_get_contents(__DIR__.'/Fixtures/flickr_photosets.json'),
+                        '1.1',
+                        'OK'
+                    ));
+
+                $mock->shouldReceive('request')
+                    ->withSomeOfArgs(
+                        $this->getUri('flickr.photosets.getPhotos')->getAbsoluteUri(),
+                        ['per_page' => 500, 'photoset_id' => '72157692062490774'],
+                    )
+                    ->andReturn(new Response(
+                        200,
+                        [],
+                        file_get_contents(__DIR__.'/Fixtures/flickr_photoset_photos.json'),
+                        '1.1',
+                        'OK'
+                    ));
+
+                $mock->shouldReceive('request')
+                    ->withSomeOfArgs(
+                        $this->getUri('flickr.people.getInfo')->getAbsoluteUri(),
+                        ['user_id' => '16842686@N04'],
+                    )
+                    ->andReturn(new Response(
+                        200,
+                        [],
+                        file_get_contents(__DIR__.'/Fixtures/flickr_people_info.json'),
                         '1.1',
                         'OK'
                     ));

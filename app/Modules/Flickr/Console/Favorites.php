@@ -26,5 +26,7 @@ class Favorites extends Command
         app(FlickrService::class)
             ->favorites()
             ->getList(['user_id' => $this->argument('nsid')]);
+
+        return 0;
     }
 }

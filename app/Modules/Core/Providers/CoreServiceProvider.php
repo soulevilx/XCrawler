@@ -4,8 +4,6 @@ namespace App\Modules\Core\Providers;
 
 use App\Modules\Core\Models\Observers\SettingObserver;
 use App\Modules\Core\Models\Setting;
-use App\Modules\Core\OAuth\Credentials\Credentials;
-use App\Modules\Core\OAuth\Credentials\CredentialsInterface;
 use App\Modules\Core\OAuth\Storage\Memory;
 use App\Modules\Core\OAuth\Storage\TokenStorageInterface;
 use Illuminate\Support\Facades\Config;

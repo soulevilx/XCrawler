@@ -41,7 +41,7 @@ abstract class AbstractBaseProvider implements ProviderInterface
             }
 
             $uri = clone $baseApiUri;
-            if (false !== strpos($path, '?')) {
+            if (str_contains($path, '?')) {
                 $parts = explode('?', $path, 2);
                 $path = $parts[0];
                 $query = $parts[1];

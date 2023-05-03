@@ -5,7 +5,7 @@ namespace App\Modules\Core\OAuth\Storage;
 use App\Modules\Core\OAuth\Exceptions\AuthorizationStateNotFoundException;
 use App\Modules\Core\OAuth\Exceptions\TokenNotFoundException;
 use App\Modules\Core\OAuth\Token\TokenInterface;
-use \Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class SymfonySession implements TokenStorageInterface
 {

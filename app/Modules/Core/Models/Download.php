@@ -2,10 +2,10 @@
 
 namespace App\Modules\Core\Models;
 
-use Jenssegers\Mongodb\Eloquent\Builder;
+use App\Modules\Core\Models\Interfaces\BaseModelInterface;
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class Download extends Model
+class Download extends Model implements BaseModelInterface
 {
     protected $connection = 'mongodb';
 

@@ -3,7 +3,6 @@
 namespace App\Modules\Flickr\Console\Queues;
 
 use App\Modules\Core\Facades\Pool;
-use App\Modules\Core\Repositories\PoolRepository;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 
@@ -13,12 +12,6 @@ use Illuminate\Contracts\Console\Isolatable;
  */
 abstract class AbstractQueueCommand extends Command implements Isolatable
 {
-    public function __construct(
-        protected PoolRepository $repository,
-    ) {
-        parent::__construct();
-    }
-
     /**
      * Execute the console command.
      *
@@ -26,10 +19,15 @@ abstract class AbstractQueueCommand extends Command implements Isolatable
      */
     public function handle()
     {
-        $queues = Pool::getPoolItems($this->getJob(), config('flickr.pool.limit'));
+        $queues = Pool::getItems([
+            'where' => ['job' => $this->getJob()],
+            'limit' => config('flickr.pool.limit'),
+        ]);
 
+        $this->output->progressStart($queues->count());
         foreach ($queues as $queue) {
             $queue->job::dispatch($queue)->onQueue($queue->queue);
+            $this->output->progressAdvance();
         }
 
         return 0;

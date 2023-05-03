@@ -20,7 +20,7 @@ class Integration extends Command
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Integrate with Flickr';
 
     /**
      * Execute the console command.
