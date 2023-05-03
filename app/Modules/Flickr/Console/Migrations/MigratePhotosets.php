@@ -39,22 +39,24 @@ class MigratePhotosets extends Command
             DB::table('flickr_photosets')
                 ->insertOrIgnore([
                     'uuid' => Str::orderedUuid(),
-                    'id' => $photoset->id,
-                    'owner' => $photoset->owner,
-                    'primary' => $photoset->primary,
-                    'secret' => $photoset->secret,
-                    'server' => $photoset->server,
-                    'farm' => $photoset->farm,
-                    'title' => $photoset->title,
-                    'description' => $photoset->description,
-                    'count_photos' => $photoset->count_photos,
-                    'count_videos' => $photoset->count_videos,
+                    'id' => $photoset['id'],
+                    'owner' => $photoset['owner'],
+                    'primary' => $photoset['primary'],
+                    'secret' => $photoset['secret'],
+                    'server' => $photoset['server'],
+                    'farm' => $photoset['farm'],
+                    'title' => $photoset['title'],
+                    'description' => $photoset['description'] ?? null,
+                    'count_photos' => $photoset['count_photos'] ?? 0,
+                    'count_videos' => $photoset['count_videos'] ?? 0,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
 
             $this->output->progressAdvance();
         });
+
+        return 0;
     }
 }
 
