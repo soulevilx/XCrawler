@@ -31,7 +31,7 @@ class MigratePhotosets extends Command
     public function handle()
     {
         $photosetMongo = DB::connection('mongodb')->table('flickr_photosets');
-        $count = $photosetMongo::count();
+        $count = $photosetMongo->count();
         $this->output->progressStart($count);
         $now = Carbon::now();
 

@@ -31,7 +31,7 @@ class MigratePhotos extends Command
     public function handle()
     {
         $photoMongo = DB::connection('mongodb')->table('flickr_photos');
-        $count = $photoMongo::count();
+        $count = $photoMongo->count();
         $this->output->progressStart($count);
         $now = Carbon::now();
 
