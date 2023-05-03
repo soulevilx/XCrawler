@@ -35,7 +35,7 @@ class MigratePhotos extends Command
         $this->output->progressStart($count);
         $now = Carbon::now();
 
-        $photoMongo::cursor()->each(function ($photo) use ($now) {
+        $photoMongo->cursor()->each(function ($photo) use ($now) {
             DB::table('flickr_photos')
                 ->insertOrIgnore([
                     'uuid' => Str::orderedUuid(),
