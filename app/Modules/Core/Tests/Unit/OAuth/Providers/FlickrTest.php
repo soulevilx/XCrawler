@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\Tests\Unit\OAuth\Providers;
 
+use App\Modules\Core\Models\Integration;
 use App\Modules\Core\OAuth\Events\RetrievedRequestToken;
 use App\Modules\Core\OAuth\OAuth1\Providers\Flickr;
 use App\Modules\Core\OAuth\ProviderFactory;
@@ -17,6 +18,12 @@ class FlickrTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Integration::create([
+            'service' => 'flickr',
+            'token' => 'test',
+            'token_secret' => 'test',
+        ]);
 
         $this->instance(
             XClient::class,
